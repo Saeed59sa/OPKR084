@@ -249,15 +249,15 @@ typedef struct UIState {
   bool awake;
 
   bool is_speed_over_limit;
-  auto speed_lim_off;
+  float speed_lim_off;
   bool is_OpenpilotViewEnabled;
   bool nOpkrAutoScreenDimming;
-  auto nOpkrUIBrightness;
-  auto nOpkrUIVolumeBoost;
+  int nOpkrUIBrightness;
+  int nOpkrUIVolumeBoost;
   bool nDebugUi1;
   bool nDebugUi2;
   bool nOpkrBlindSpotDetect;
-  auto lat_control;
+  int lat_control;
   bool driving_record;
   int setbtn_count;
   int homebtn_count;
