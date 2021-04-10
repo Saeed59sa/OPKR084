@@ -10,7 +10,7 @@
 #define CAPTURE_STATE_PAUSED 3
 #define CLICK_TIME 0.2
 #define RECORD_INTERVAL 180 // Time in seconds to rotate recordings; Max for screenrecord is 3 minutes
-#define RECORD_FILES 3 // Number of files to create before looping over
+#define RECORD_FILES 200 // Limitation of file count. Approximately 70MB * 200 = 14GB
 
 typedef struct dashcam_element {
   int pos_x;
@@ -137,6 +137,7 @@ void start_capture() {
   printf("Capturing to file: %s\n",cmd);
   start_time = get_time();
 
+  // Auto purge if files are greater than RECORD_FILES. It will remove older files.
   snprintf(purge,sizeof(purge),"ls -td1 %s/*.mp4 | tail -n +%d | xargs rm -f&", videos_dir, RECORD_FILES);
   system(purge);
   system(cmd);
