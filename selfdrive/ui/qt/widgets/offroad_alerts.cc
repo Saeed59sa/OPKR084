@@ -52,12 +52,12 @@ OffroadAlert::OffroadAlert(QWidget* parent) : QFrame(parent) {
   QHBoxLayout *footer_layout = new QHBoxLayout();
   layout->addLayout(footer_layout);
 
-  QPushButton *dismiss_btn = new QPushButton("ÇØÁ¦");
+  QPushButton *dismiss_btn = new QPushButton("í•´ì œ");
   dismiss_btn->setFixedSize(400, 125);
   footer_layout->addWidget(dismiss_btn, 0, Qt::AlignBottom | Qt::AlignLeft);
   QObject::connect(dismiss_btn, SIGNAL(released()), this, SIGNAL(closeAlerts()));
 
-  rebootBtn.setText("¾÷µ¥ÀÌÆ® ¹× Àç½ÃÀÛ");
+  rebootBtn.setText("ì—…ë°ì´íŠ¸ ë° ìž¬ì‹œìž‘");
   rebootBtn.setFixedSize(600, 125);
   rebootBtn.setVisible(false);
   footer_layout->addWidget(&rebootBtn, 0, Qt::AlignBottom | Qt::AlignRight);
