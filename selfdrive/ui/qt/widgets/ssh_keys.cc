@@ -321,8 +321,8 @@ VolumeControl::VolumeControl() : AbstractControl("EON 볼륨 조절(%)", "EON의
     QString values = QString::number(value);
     GLWindow::ui_state.nOpkrUIVolumeBoost = value;
     Params().put("OpkrUIVolumeBoost", values.toStdString());
-    GLWindow::ui_state.sound->play(AudibleAlert::CHIME_WARNING1);
     refresh();
+    GLWindow::ui_state.sound->play(AudibleAlert::CHIME_WARNING1);
   });
   
   QObject::connect(&btnplus, &QPushButton::released, [=]() {
@@ -336,8 +336,8 @@ VolumeControl::VolumeControl() : AbstractControl("EON 볼륨 조절(%)", "EON의
     QString values = QString::number(value);
     GLWindow::ui_state.nOpkrUIVolumeBoost = value;
     Params().put("OpkrUIVolumeBoost", values.toStdString());
-    GLWindow::ui_state.sound->play(AudibleAlert::CHIME_WARNING1);
     refresh();
+    GLWindow::ui_state.sound->play(AudibleAlert::CHIME_WARNING1);
   });
   refresh();
 }
