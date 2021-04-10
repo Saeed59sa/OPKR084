@@ -4,6 +4,7 @@
 #include "widgets/ssh_keys.hpp"
 #include "common/params.h"
 #include <QProcess>
+#include "home.hpp"
 
 SshControl::SshControl() : AbstractControl("SSH 키 설정", "경고: 이렇게 하면 GitHub 설정의 모든 공개 키에 대한 SSH 액세스 권한이 부여됩니다. 사용자 이외의 GitHub 사용자 이름을 입력하지 마십시오. 콤마 직원은 절대 GitHub 사용자 이름을 추가하라는 요청을 하지 않습니다.", "") {
 
@@ -176,7 +177,7 @@ CarForceSet::CarForceSet() : AbstractControl("차량강제인식", "핑거프린
         QProcess::execute("/data/openpilot/car_force_set.sh");
       }
     } else {
-      Params().delete_db_value("CarModel");
+      Params().remove("CarModel");
       refreshc();
     }
   });
@@ -318,6 +319,7 @@ VolumeControl::VolumeControl() : AbstractControl("EON 볼륨 조절(%)", "EON의
     } else {
     }
     QString values = QString::number(value);
+    GLWindow::ui_state.nOpkrUIVolumeBoost = value;
     Params().put("OpkrUIVolumeBoost", values.toStdString());
     refresh();
   });
@@ -331,6 +333,7 @@ VolumeControl::VolumeControl() : AbstractControl("EON 볼륨 조절(%)", "EON의
     } else {
     }
     QString values = QString::number(value);
+    GLWindow::ui_state.nOpkrUIVolumeBoost = value;
     Params().put("OpkrUIVolumeBoost", values.toStdString());
     refresh();
   });
@@ -386,6 +389,7 @@ BrightnessControl::BrightnessControl() : AbstractControl("EON 밝기 조절(%)",
     } else {
     }
     QString values = QString::number(value);
+    GLWindow::ui_state.nOpkrUIBrightness = value;
     Params().put("OpkrUIBrightness", values.toStdString());
     refresh();
   });
@@ -399,6 +403,7 @@ BrightnessControl::BrightnessControl() : AbstractControl("EON 밝기 조절(%)",
     } else {
     }
     QString values = QString::number(value);
+    GLWindow::ui_state.nOpkrUIBrightness = value;
     Params().put("OpkrUIBrightness", values.toStdString());
     refresh();
   });
@@ -1099,6 +1104,7 @@ SpeedLimitOffset::SpeedLimitOffset() : AbstractControl("MAP기반 제한속도 �
     } else {
     }
     QString values = QString::number(value);
+    GLWindow::ui_state.speed_lim_off = value;
     Params().put("OpkrSpeedLimitOffset", values.toStdString());
     refresh();
   });
@@ -1112,6 +1118,7 @@ SpeedLimitOffset::SpeedLimitOffset() : AbstractControl("MAP기반 제한속도 �
     } else {
     }
     QString values = QString::number(value);
+    GLWindow::ui_state.speed_lim_off = value;
     Params().put("OpkrSpeedLimitOffset", values.toStdString());
     refresh();
   });
