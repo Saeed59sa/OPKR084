@@ -275,7 +275,7 @@ void dashcam(UIState *s) {
     stop_capture();
   }
 
-  if (s->driving_record == 1) {
+  if (s->driving_record) {
     if (s->scene.car_state.getVEgo() >= 1.5 && captureState == CAPTURE_STATE_NOT_CAPTURING && s->scene.controls_state.getEnabled()) {
       start_capture();
     } else if (s->scene.car_state.getVEgo() < 1 && captureState == CAPTURE_STATE_CAPTURING && s->scene.controls_state.getEnabled()) {

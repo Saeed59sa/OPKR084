@@ -364,14 +364,14 @@ static void ui_draw_debug(UIState *s)
   
   nvgTextAlign(s->vg, NVG_ALIGN_LEFT | NVG_ALIGN_BASELINE);
 
-  if (s->nDebugUi1 == 1) {
+  if (s->nDebugUi1) {
     ui_draw_text(s, 0, 1035, scene.alertTextMsg1.c_str(), 50, COLOR_WHITE_ALPHA(125), "sans-semibold");
     ui_draw_text(s, 0, 1078, scene.alertTextMsg2.c_str(), 50, COLOR_WHITE_ALPHA(125), "sans-semibold");
   }
 
   
   nvgFillColor(s->vg, COLOR_WHITE_ALPHA(125));
-  if (s->nDebugUi2 == 1) {
+  if (s->nDebugUi2) {
     //if (scene.gpsAccuracyUblox != 0.00) {
     //  nvgFontSize(s->vg, 34);
     //  ui_print(s, 28, 28, "LAT／LON: %.5f／%.5f", scene.latitudeUblox, scene.longitudeUblox);
@@ -1084,7 +1084,7 @@ static void ui_draw_vision_car(UIState *s) {
   bool car_valid_left = scene->leftblindspot;
   bool car_valid_right = scene->rightblindspot;
   float car_img_alpha;
-  if (s->nOpkrBlindSpotDetect == 1) {
+  if (s->nOpkrBlindSpotDetect) {
     if (s->scene.car_valid_status_changed != car_valid_status) {
       s->scene.blindspot_blinkingrate = 114;
       s->scene.car_valid_status_changed = car_valid_status;

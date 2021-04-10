@@ -74,16 +74,19 @@ void ui_init(UIState *s) {
   s->homebtn_count = 0;
 
   s->scene.satelliteCount = -1;
-  read_param(&s->nOpkrAutoScreenDimming, "OpkrAutoScreenDimming");
-  read_param(&s->nOpkrUIBrightness, "OpkrUIBrightness");
-  read_param(&s->nOpkrUIVolumeBoost, "OpkrUIVolumeBoost");
-  read_param(&s->nDebugUi1, "DebugUi1");
-  read_param(&s->nDebugUi2, "DebugUi2");
-  read_param(&s->nOpkrBlindSpotDetect, "OpkrBlindSpotDetect");
-  read_param(&s->lat_control, "LateralControlMethod");
-  read_param(&s->speed_lim_off, "OpkrSpeedLimitOffset");
-  read_param(&s->scene.laneless_mode, "LanelessMode");
-  Params().write_db_value("LimitSetSpeedCamera", "0", 1);
+
+  Params params;
+  s->nOpkrAutoScreenDimming = params.getBool("OpkrAutoScreenDimming");
+  s->nOpkrUIBrightness = params.get("OpkrUIBrightness");
+  s->nOpkrUIVolumeBoost = params.get("OpkrUIVolumeBoost");
+  s->nDebugUi1 = params.getBool("DebugUi1");
+  s->nDebugUi2 = params.getBool("DebugUi2");
+  s->nOpkrBlindSpotDetect = params.getBool("OpkrBlindSpotDetect");
+  s->lat_control = params.get("LateralControlMethod");
+  s->driving_record = params.getBool("OpkrDrivingRecord");
+  s->speed_lim_off = params.get("OpkrSpeedLimitOffset");
+  s->scene.laneless_mode = params.get("LanelessMode");
+  Params().put("LimitSetSpeedCamera", "0", 1);
 
   ui_nvg_init(s);
 
@@ -374,7 +377,6 @@ static void update_params(UIState *s) {
     s->nOpkrUIBrightness = params.get("OpkrUIBrightness");
     s->nOpkrUIVolumeBoost = params.get("OpkrUIVolumeBoost");
     s->lat_control = params.get("LateralControlMethod");
-    s->driving_record = params.getBool("OpkrDrivingRecord");
     s->driving_record = params.getBool("OpkrDrivingRecord");
     scene.end_to_end = params.getBool("EndToEndToggle");
   } else if (frame % (6*UI_FREQ) == 0) {
