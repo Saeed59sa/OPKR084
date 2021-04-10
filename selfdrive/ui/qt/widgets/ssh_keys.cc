@@ -169,7 +169,7 @@ CarForceSet::CarForceSet() : AbstractControl("차량강제인식", "핑거프린
 
   QObject::connect(&btnc, &QPushButton::released, [=]() {
     if (btnc.text() == "설정") {
-      carname = InputDialog::getText("차량명은 이전메뉴 차량강제인식을 클릭하여 학인");
+      carname = InputDialog::getText("차량명은 이전메뉴 차량강제인식을 클릭하여 확인");
       if (carname.length() > 0) {
         btnc.setText("완료");
         btnc.setEnabled(false);

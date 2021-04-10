@@ -114,7 +114,7 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
 
   QString resetCalibDesc = "오픈파일럿을 사용하려면 장치를 왼쪽 또는 오른쪽으로 4°, 위 또는 아래로 5° 이내에 장착해야 합니다. 오픈파일럿이 지속적으로 보정되고 있으므로 재설정할 필요가 거의 없습니다.";
   ButtonControl *resetCalibBtn = new ButtonControl("캘리브레이션정보", "확인", resetCalibDesc, [=]() {
-    QString desc = "왼쪽/오른쪽 4° 및 위/아래 5° 이내";
+    QString desc = "[왼쪽/오른쪽 4° 및 위/아래 5° 이내]";
     std::string calib_bytes = Params().get("CalibrationParams");
     if (!calib_bytes.empty()) {
       try {
