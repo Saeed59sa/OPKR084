@@ -448,7 +448,7 @@ class Controls:
     if live_sr:
       sr = max(params.steerRatio, 0.1)
     else:
-      sr = max(self.new_steerRatio, 0.1)
+     sr = max(self.new_steerRatio, 0.1)
     self.VM.update_params(x, sr)
     
     self.steerRatio_to_send = sr
