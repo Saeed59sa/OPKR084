@@ -238,6 +238,26 @@ std::string Params::get(const char *key, bool block) {
   }
 }
 
+std::string Params::opkrget(std::string key, bool block){
+  char* value;
+  size_t size;
+  int r;
+
+  if (block) {
+    r = read_db_value_blocking((const char*)key.c_str(), &value, &size);
+  } else {
+    r = read_db_value((const char*)key.c_str(), &value, &size);
+  }
+
+  if (r == 0){
+    std::string s(value, size);
+    free(value);
+    return s;
+  } else {
+    return "";
+  }
+}
+
 int Params::read_db_all(std::map<std::string, std::string> *params) {
   FileLock file_lock(params_path + "/.lock", LOCK_SH);
   std::lock_guard<FileLock> lk(file_lock);
