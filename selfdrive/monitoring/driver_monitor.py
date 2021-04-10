@@ -8,8 +8,8 @@ from common.stat_live import RunningStatFilter
 
 from common.params import Params
 
-EnableLogger = Params().get("OpkrEnableLogger", encoding='utf8') == "1"
-EnableDriverMonitoring = Params().get("OpkrEnableDriverMonitoring", encoding='utf8') == "1"
+EnableLogger = Params().get_bool("OpkrEnableLogger")
+EnableDriverMonitoring = Params().get_bool("OpkrEnableDriverMonitoring")
 EventName = car.CarEvent.EventName
 
 # ******************************************************************************************
@@ -43,6 +43,8 @@ _BLINK_THRESHOLD_SLACK = 0.65
 _BLINK_THRESHOLD_STRICT = 0.5
 _PITCH_WEIGHT = 1.35  # pitch matters a lot more
 _POSESTD_THRESHOLD = 0.14
+_E2E_POSE_THRESHOLD = 0.9
+_E2E_EYES_THRESHOLD = 0.75
 _METRIC_THRESHOLD = 0.4
 _METRIC_THRESHOLD_SLACK = 0.55
 _METRIC_THRESHOLD_STRICT = 0.4
@@ -207,8 +209,10 @@ class DriverStatus():
     self.blink.left_blink = driver_state.leftBlinkProb * (driver_state.leftEyeProb > _EYE_THRESHOLD) * (driver_state.sunglassesProb < _SG_THRESHOLD)
     self.blink.right_blink = driver_state.rightBlinkProb * (driver_state.rightEyeProb > _EYE_THRESHOLD) * (driver_state.sunglassesProb < _SG_THRESHOLD)
 
-    self.driver_distracted = self._is_driver_distracted(self.pose, self.blink) > 0 and \
-                              driver_state.faceProb > _FACE_THRESHOLD and self.pose.low_std
+    self.driver_distracted = (self._is_driver_distracted(self.pose, self.blink) > 0 and
+                              driver_state.faceProb > _FACE_THRESHOLD and self.pose.low_std) or \
+                             ((driver_state.distractedPose > _E2E_POSE_THRESHOLD or driver_state.distractedEyes > _E2E_EYES_THRESHOLD) and
+                              (self.face_detected and not self.face_partial))
     self.driver_distraction_filter.update(self.driver_distracted)
 
     # update offseter
@@ -222,7 +226,7 @@ class DriverStatus():
 
     self.is_model_uncertain = self.hi_stds * DT_DMON > _HI_STD_FALLBACK_TIME
     self._set_timers(self.face_detected and not self.is_model_uncertain)
-    if self.face_detected and not self.pose.low_std:
+    if self.face_detected and not self.pose.low_std and not self.driver_distracted:
       self.hi_stds += 1
     elif self.face_detected and self.pose.low_std:
       self.hi_stds = 0

@@ -34,8 +34,8 @@ SshControl::SshControl() : AbstractControl("SSH 키 설정", "경고: 이렇게 
         getUserKeys(username);
       }
     } else {
-      Params().delete_db_value("GithubUsername");
-      Params().delete_db_value("GithubSshKeys");
+      Params().remove("GithubUsername");
+      Params().remove("GithubSshKeys");
       refresh();
     }
   });
@@ -89,8 +89,8 @@ void SshControl::parseResponse(){
     networkTimer->stop();
     QString response = reply->readAll();
     if (reply->error() == QNetworkReply::NoError && response.length()) {
-      Params().write_db_value("GithubUsername", username.toStdString());
-      Params().write_db_value("GithubSshKeys", response.toStdString());
+      Params().put("GithubUsername", username.toStdString());
+      Params().put("GithubSshKeys", response.toStdString());
     } else if(reply->error() == QNetworkReply::NoError){
       err = username + " 사용자에 대한 Github 키가 존재하지 않습니다.";
     } else {
@@ -126,11 +126,11 @@ OpenpilotView::OpenpilotView() : AbstractControl("오픈파일럿 주행화면 �
   hlayout->addWidget(&btn);
 
   QObject::connect(&btn, &QPushButton::released, [=]() {
-    QString stat = QString::fromStdString(Params().get("IsOpenpilotViewEnabled"));
-    if (stat == "1") {
-      Params().write_db_value("IsOpenpilotViewEnabled", "0", 1);
+    bool stat = Params().getBool("IsOpenpilotViewEnabled");
+    if (stat) {
+      Params().putBool("IsOpenpilotViewEnabled", false);
     } else {
-      Params().write_db_value("IsOpenpilotViewEnabled", "1", 1);
+      Params().putBool("IsOpenpilotViewEnabled", true);
     }
     refresh();
   });
@@ -138,8 +138,8 @@ OpenpilotView::OpenpilotView() : AbstractControl("오픈파일럿 주행화면 �
 }
 
 void OpenpilotView::refresh() {
-  QString param = QString::fromStdString(Params().get("IsOpenpilotViewEnabled"));
-  if (param == "1") {
+  bool param = Params().getBool("IsOpenpilotViewEnabled");
+  if (param) {
     btn.setText("미리보기해제");
   } else {
     btn.setText("미리보기");
@@ -172,7 +172,7 @@ CarForceSet::CarForceSet() : AbstractControl("차량강제인식", "핑거프린
       if (carname.length() > 0) {
         btnc.setText("완료");
         btnc.setEnabled(false);
-        Params().write_db_value("CarModel", carname.toStdString());
+        Params().put("CarModel", carname.toStdString());
         QProcess::execute("/data/openpilot/car_force_set.sh");
       }
     } else {
@@ -234,7 +234,7 @@ AutoShutdown::AutoShutdown() : AbstractControl("EON 자동 종료", "운행종�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrAutoShutdown", values.toStdString());
+    Params().put("OpkrAutoShutdown", values.toStdString());
     refresh();
   });
   
@@ -247,7 +247,7 @@ AutoShutdown::AutoShutdown() : AbstractControl("EON 자동 종료", "운행종�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrAutoShutdown", values.toStdString());
+    Params().put("OpkrAutoShutdown", values.toStdString());
     refresh();
   });
   refresh();
@@ -318,7 +318,7 @@ VolumeControl::VolumeControl() : AbstractControl("EON 볼륨 조절(%)", "EON의
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrUIVolumeBoost", values.toStdString());
+    Params().put("OpkrUIVolumeBoost", values.toStdString());
     refresh();
   });
   
@@ -331,7 +331,7 @@ VolumeControl::VolumeControl() : AbstractControl("EON 볼륨 조절(%)", "EON의
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrUIVolumeBoost", values.toStdString());
+    Params().put("OpkrUIVolumeBoost", values.toStdString());
     refresh();
   });
   refresh();
@@ -386,7 +386,7 @@ BrightnessControl::BrightnessControl() : AbstractControl("EON 밝기 조절(%)",
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrUIBrightness", values.toStdString());
+    Params().put("OpkrUIBrightness", values.toStdString());
     refresh();
   });
   
@@ -399,7 +399,7 @@ BrightnessControl::BrightnessControl() : AbstractControl("EON 밝기 조절(%)",
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrUIBrightness", values.toStdString());
+    Params().put("OpkrUIBrightness", values.toStdString());
     refresh();
   });
   refresh();
@@ -452,7 +452,7 @@ ChargingMin::ChargingMin() : AbstractControl("배터리 최소 충전 값", "배
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrBatteryChargingMin", values.toStdString());
+    Params().put("OpkrBatteryChargingMin", values.toStdString());
     refresh();
   });
   
@@ -465,7 +465,7 @@ ChargingMin::ChargingMin() : AbstractControl("배터리 최소 충전 값", "배
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrBatteryChargingMin", values.toStdString());
+    Params().put("OpkrBatteryChargingMin", values.toStdString());
     refresh();
   });
   refresh();
@@ -513,7 +513,7 @@ ChargingMax::ChargingMax() : AbstractControl("배터리 최대 충전 값", "배
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrBatteryChargingMax", values.toStdString());
+    Params().put("OpkrBatteryChargingMax", values.toStdString());
     refresh();
   });
   
@@ -526,7 +526,7 @@ ChargingMax::ChargingMax() : AbstractControl("배터리 최대 충전 값", "배
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrBatteryChargingMax", values.toStdString());
+    Params().put("OpkrBatteryChargingMax", values.toStdString());
     refresh();
   });
   refresh();
@@ -575,7 +575,7 @@ VariableCruiseProfile::VariableCruiseProfile() : AbstractControl("크루즈 가�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrVariableCruiseProfile", values.toStdString());
+    Params().put("OpkrVariableCruiseProfile", values.toStdString());
     refresh();
   });
   
@@ -588,7 +588,7 @@ VariableCruiseProfile::VariableCruiseProfile() : AbstractControl("크루즈 가�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrVariableCruiseProfile", values.toStdString());
+    Params().put("OpkrVariableCruiseProfile", values.toStdString());
     refresh();
   });
   refresh();
@@ -641,7 +641,7 @@ CruisemodeSelInit::CruisemodeSelInit() : AbstractControl("크루즈 시작모드
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("CruiseStatemodeSelInit", values.toStdString());
+    Params().put("CruiseStatemodeSelInit", values.toStdString());
     refresh();
   });
   
@@ -654,7 +654,7 @@ CruisemodeSelInit::CruisemodeSelInit() : AbstractControl("크루즈 시작모드
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("CruiseStatemodeSelInit", values.toStdString());
+    Params().put("CruiseStatemodeSelInit", values.toStdString());
     refresh();
   });
   refresh();
@@ -711,7 +711,7 @@ LaneChangeSpeed::LaneChangeSpeed() : AbstractControl("차선변경 속도 설정
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrLaneChangeSpeed", values.toStdString());
+    Params().put("OpkrLaneChangeSpeed", values.toStdString());
     refresh();
   });
   
@@ -724,7 +724,7 @@ LaneChangeSpeed::LaneChangeSpeed() : AbstractControl("차선변경 속도 설정
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrLaneChangeSpeed", values.toStdString());
+    Params().put("OpkrLaneChangeSpeed", values.toStdString());
     refresh();
   });
   refresh();
@@ -772,7 +772,7 @@ LaneChangeDelay::LaneChangeDelay() : AbstractControl("차선변경 지연시간 
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrAutoLaneChangeDelay", values.toStdString());
+    Params().put("OpkrAutoLaneChangeDelay", values.toStdString());
     refresh();
   });
   
@@ -785,7 +785,7 @@ LaneChangeDelay::LaneChangeDelay() : AbstractControl("차선변경 지연시간 
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrAutoLaneChangeDelay", values.toStdString());
+    Params().put("OpkrAutoLaneChangeDelay", values.toStdString());
     refresh();
   });
   refresh();
@@ -846,7 +846,7 @@ LeftCurvOffset::LeftCurvOffset() : AbstractControl("오프셋조정(왼쪽 커�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("LeftCurvOffsetAdj", values.toStdString());
+    Params().put("LeftCurvOffsetAdj", values.toStdString());
     refresh();
   });
   
@@ -859,7 +859,7 @@ LeftCurvOffset::LeftCurvOffset() : AbstractControl("오프셋조정(왼쪽 커�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("LeftCurvOffsetAdj", values.toStdString());
+    Params().put("LeftCurvOffsetAdj", values.toStdString());
     refresh();
   });
   refresh();
@@ -907,7 +907,7 @@ RightCurvOffset::RightCurvOffset() : AbstractControl("오프셋조정(오른쪽 
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("RightCurvOffsetAdj", values.toStdString());
+    Params().put("RightCurvOffsetAdj", values.toStdString());
     refresh();
   });
   
@@ -920,7 +920,7 @@ RightCurvOffset::RightCurvOffset() : AbstractControl("오프셋조정(오른쪽 
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("RightCurvOffsetAdj", values.toStdString());
+    Params().put("RightCurvOffsetAdj", values.toStdString());
     refresh();
   });
   refresh();
@@ -968,7 +968,7 @@ MaxAngleLimit::MaxAngleLimit() : AbstractControl("최대 조향각 설정(각도
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrMaxAngleLimit", values.toStdString());
+    Params().put("OpkrMaxAngleLimit", values.toStdString());
     refresh();
   });
   
@@ -981,7 +981,7 @@ MaxAngleLimit::MaxAngleLimit() : AbstractControl("최대 조향각 설정(각도
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrMaxAngleLimit", values.toStdString());
+    Params().put("OpkrMaxAngleLimit", values.toStdString());
     refresh();
   });
   refresh();
@@ -1034,7 +1034,7 @@ SteerAngleCorrection::SteerAngleCorrection() : AbstractControl("스티어앵글 
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrSteerAngleCorrection", values.toStdString());
+    Params().put("OpkrSteerAngleCorrection", values.toStdString());
     refresh();
   });
   
@@ -1047,7 +1047,7 @@ SteerAngleCorrection::SteerAngleCorrection() : AbstractControl("스티어앵글 
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrSteerAngleCorrection", values.toStdString());
+    Params().put("OpkrSteerAngleCorrection", values.toStdString());
     refresh();
   });
   refresh();
@@ -1099,7 +1099,7 @@ SpeedLimitOffset::SpeedLimitOffset() : AbstractControl("MAP기반 제한속도 �
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrSpeedLimitOffset", values.toStdString());
+    Params().put("OpkrSpeedLimitOffset", values.toStdString());
     refresh();
   });
   
@@ -1112,7 +1112,7 @@ SpeedLimitOffset::SpeedLimitOffset() : AbstractControl("MAP기반 제한속도 �
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OpkrSpeedLimitOffset", values.toStdString());
+    Params().put("OpkrSpeedLimitOffset", values.toStdString());
     refresh();
   });
   refresh();
@@ -1160,7 +1160,7 @@ MaxSteer::MaxSteer() : AbstractControl("MAX_STEER", "판다 MAX_STEER 값을 수
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("MaxSteer", values.toStdString());
+    Params().put("MaxSteer", values.toStdString());
     refresh();
   });
   
@@ -1173,7 +1173,7 @@ MaxSteer::MaxSteer() : AbstractControl("MAX_STEER", "판다 MAX_STEER 값을 수
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("MaxSteer", values.toStdString());
+    Params().put("MaxSteer", values.toStdString());
     refresh();
   });
   refresh();
@@ -1221,7 +1221,7 @@ MaxRTDelta::MaxRTDelta() : AbstractControl("RT_DELTA", "판다 RT_DELTA 값을 �
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("MaxRTDelta", values.toStdString());
+    Params().put("MaxRTDelta", values.toStdString());
     refresh();
   });
   
@@ -1234,7 +1234,7 @@ MaxRTDelta::MaxRTDelta() : AbstractControl("RT_DELTA", "판다 RT_DELTA 값을 �
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("MaxRTDelta", values.toStdString());
+    Params().put("MaxRTDelta", values.toStdString());
     refresh();
   });
   refresh();
@@ -1282,7 +1282,7 @@ MaxRateUp::MaxRateUp() : AbstractControl("MAX_RATE_UP", "판다 MAX_RATE_UP 값�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("MaxRateUp", values.toStdString());
+    Params().put("MaxRateUp", values.toStdString());
     refresh();
   });
   
@@ -1295,7 +1295,7 @@ MaxRateUp::MaxRateUp() : AbstractControl("MAX_RATE_UP", "판다 MAX_RATE_UP 값�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("MaxRateUp", values.toStdString());
+    Params().put("MaxRateUp", values.toStdString());
     refresh();
   });
   refresh();
@@ -1343,7 +1343,7 @@ MaxRateDown::MaxRateDown() : AbstractControl("MAX_RATE_DOWN", "판다 MAX_RATE_D
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("MaxRateDown", values.toStdString());
+    Params().put("MaxRateDown", values.toStdString());
     refresh();
   });
   
@@ -1356,7 +1356,7 @@ MaxRateDown::MaxRateDown() : AbstractControl("MAX_RATE_DOWN", "판다 MAX_RATE_D
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("MaxRateDown", values.toStdString());
+    Params().put("MaxRateDown", values.toStdString());
     refresh();
   });
   refresh();
@@ -1405,7 +1405,7 @@ CameraOffset::CameraOffset() : AbstractControl("CameraOffset", "CameraOffset값�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("CameraOffsetAdj", values.toStdString());
+    Params().put("CameraOffsetAdj", values.toStdString());
     refresh();
   });
   
@@ -1418,7 +1418,7 @@ CameraOffset::CameraOffset() : AbstractControl("CameraOffset", "CameraOffset값�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("CameraOffsetAdj", values.toStdString());
+    Params().put("CameraOffsetAdj", values.toStdString());
     refresh();
   });
   refresh();
@@ -1470,7 +1470,7 @@ SRBaseControl::SRBaseControl() : AbstractControl("SteerRatio", "SteerRatio 기�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerRatioAdj", values.toStdString());
+    Params().put("SteerRatioAdj", values.toStdString());
     refresh();
   });
   
@@ -1483,7 +1483,7 @@ SRBaseControl::SRBaseControl() : AbstractControl("SteerRatio", "SteerRatio 기�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerRatioAdj", values.toStdString());
+    Params().put("SteerRatioAdj", values.toStdString());
     refresh();
   });
   refresh();
@@ -1535,7 +1535,7 @@ SRMaxControl::SRMaxControl() : AbstractControl("SteerRatioMax", "SteerRatio 최�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerRatioMaxAdj", values.toStdString());
+    Params().put("SteerRatioMaxAdj", values.toStdString());
     refresh();
   });
   
@@ -1548,7 +1548,7 @@ SRMaxControl::SRMaxControl() : AbstractControl("SteerRatioMax", "SteerRatio 최�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerRatioMaxAdj", values.toStdString());
+    Params().put("SteerRatioMaxAdj", values.toStdString());
     refresh();
   });
   refresh();
@@ -1600,7 +1600,7 @@ SteerActuatorDelay::SteerActuatorDelay() : AbstractControl("SteerActuatorDelay",
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerActuatorDelayAdj", values.toStdString());
+    Params().put("SteerActuatorDelayAdj", values.toStdString());
     refresh();
   });
   
@@ -1613,7 +1613,7 @@ SteerActuatorDelay::SteerActuatorDelay() : AbstractControl("SteerActuatorDelay",
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerActuatorDelayAdj", values.toStdString());
+    Params().put("SteerActuatorDelayAdj", values.toStdString());
     refresh();
   });
   refresh();
@@ -1665,7 +1665,7 @@ SteerRateCost::SteerRateCost() : AbstractControl("SteerRateCost", "SteerRateCost
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerRateCostAdj", values.toStdString());
+    Params().put("SteerRateCostAdj", values.toStdString());
     refresh();
   });
   
@@ -1678,7 +1678,7 @@ SteerRateCost::SteerRateCost() : AbstractControl("SteerRateCost", "SteerRateCost
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerRateCostAdj", values.toStdString());
+    Params().put("SteerRateCostAdj", values.toStdString());
     refresh();
   });
   refresh();
@@ -1730,7 +1730,7 @@ SteerLimitTimer::SteerLimitTimer() : AbstractControl("SteerLimitTimer", "SteerLi
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerLimitTimerAdj", values.toStdString());
+    Params().put("SteerLimitTimerAdj", values.toStdString());
     refresh();
   });
   
@@ -1743,7 +1743,7 @@ SteerLimitTimer::SteerLimitTimer() : AbstractControl("SteerLimitTimer", "SteerLi
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerLimitTimerAdj", values.toStdString());
+    Params().put("SteerLimitTimerAdj", values.toStdString());
     refresh();
   });
   refresh();
@@ -1795,7 +1795,7 @@ TireStiffnessFactor::TireStiffnessFactor() : AbstractControl("TireStiffnessFacto
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("TireStiffnessFactorAdj", values.toStdString());
+    Params().put("TireStiffnessFactorAdj", values.toStdString());
     refresh();
   });
   
@@ -1808,7 +1808,7 @@ TireStiffnessFactor::TireStiffnessFactor() : AbstractControl("TireStiffnessFacto
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("TireStiffnessFactorAdj", values.toStdString());
+    Params().put("TireStiffnessFactorAdj", values.toStdString());
     refresh();
   });
   refresh();
@@ -1860,7 +1860,7 @@ SteerMaxBase::SteerMaxBase() : AbstractControl("SteerMax기본값", "SteerMax기
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerMaxBaseAdj", values.toStdString());
+    Params().put("SteerMaxBaseAdj", values.toStdString());
     refresh();
   });
   
@@ -1873,7 +1873,7 @@ SteerMaxBase::SteerMaxBase() : AbstractControl("SteerMax기본값", "SteerMax기
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerMaxBaseAdj", values.toStdString());
+    Params().put("SteerMaxBaseAdj", values.toStdString());
     refresh();
   });
   refresh();
@@ -1921,7 +1921,7 @@ SteerMaxMax::SteerMaxMax() : AbstractControl("SteerMax최대값", "SteerMax최�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerMaxAdj", values.toStdString());
+    Params().put("SteerMaxAdj", values.toStdString());
     refresh();
   });
   
@@ -1934,7 +1934,7 @@ SteerMaxMax::SteerMaxMax() : AbstractControl("SteerMax최대값", "SteerMax최�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerMaxAdj", values.toStdString());
+    Params().put("SteerMaxAdj", values.toStdString());
     refresh();
   });
   refresh();
@@ -1982,7 +1982,7 @@ SteerMaxv::SteerMaxv() : AbstractControl("SteerMaxV", "SteerMaxV값을 조정합
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerMaxvAdj", values.toStdString());
+    Params().put("SteerMaxvAdj", values.toStdString());
     refresh();
   });
   
@@ -1995,7 +1995,7 @@ SteerMaxv::SteerMaxv() : AbstractControl("SteerMaxV", "SteerMaxV값을 조정합
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerMaxvAdj", values.toStdString());
+    Params().put("SteerMaxvAdj", values.toStdString());
     refresh();
   });
   refresh();
@@ -2047,7 +2047,7 @@ SteerDeltaUpBase::SteerDeltaUpBase() : AbstractControl("SteerDeltaUp기본값", 
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerDeltaUpBaseAdj", values.toStdString());
+    Params().put("SteerDeltaUpBaseAdj", values.toStdString());
     refresh();
   });
   
@@ -2060,7 +2060,7 @@ SteerDeltaUpBase::SteerDeltaUpBase() : AbstractControl("SteerDeltaUp기본값", 
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerDeltaUpBaseAdj", values.toStdString());
+    Params().put("SteerDeltaUpBaseAdj", values.toStdString());
     refresh();
   });
   refresh();
@@ -2108,7 +2108,7 @@ SteerDeltaUpMax::SteerDeltaUpMax() : AbstractControl("SteerDeltaUp최대값", "S
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerDeltaUpAdj", values.toStdString());
+    Params().put("SteerDeltaUpAdj", values.toStdString());
     refresh();
   });
   
@@ -2121,7 +2121,7 @@ SteerDeltaUpMax::SteerDeltaUpMax() : AbstractControl("SteerDeltaUp최대값", "S
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerDeltaUpAdj", values.toStdString());
+    Params().put("SteerDeltaUpAdj", values.toStdString());
     refresh();
   });
   refresh();
@@ -2169,7 +2169,7 @@ SteerDeltaDownBase::SteerDeltaDownBase() : AbstractControl("SteerDeltaDown기본
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerDeltaDownBaseAdj", values.toStdString());
+    Params().put("SteerDeltaDownBaseAdj", values.toStdString());
     refresh();
   });
   
@@ -2182,7 +2182,7 @@ SteerDeltaDownBase::SteerDeltaDownBase() : AbstractControl("SteerDeltaDown기본
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerDeltaDownBaseAdj", values.toStdString());
+    Params().put("SteerDeltaDownBaseAdj", values.toStdString());
     refresh();
   });
   refresh();
@@ -2230,7 +2230,7 @@ SteerDeltaDownMax::SteerDeltaDownMax() : AbstractControl("SteerDeltaDown최대�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerDeltaDownAdj", values.toStdString());
+    Params().put("SteerDeltaDownAdj", values.toStdString());
     refresh();
   });
   
@@ -2243,7 +2243,7 @@ SteerDeltaDownMax::SteerDeltaDownMax() : AbstractControl("SteerDeltaDown최대�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerDeltaDownAdj", values.toStdString());
+    Params().put("SteerDeltaDownAdj", values.toStdString());
     refresh();
   });
   refresh();
@@ -2291,7 +2291,7 @@ SteerThreshold::SteerThreshold() : AbstractControl("SteerThreshold", "SteerThres
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerThreshold", values.toStdString());
+    Params().put("SteerThreshold", values.toStdString());
     refresh();
   });
   
@@ -2304,7 +2304,7 @@ SteerThreshold::SteerThreshold() : AbstractControl("SteerThreshold", "SteerThres
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("SteerThreshold", values.toStdString());
+    Params().put("SteerThreshold", values.toStdString());
     refresh();
   });
   refresh();
@@ -2353,7 +2353,7 @@ LateralControl::LateralControl() : AbstractControl("조향제어", "조향제어
     } else {
     }
     QString latcontrols = QString::number(latcontrol);
-    Params().write_db_value("LateralControlMethod", latcontrols.toStdString());
+    Params().put("LateralControlMethod", latcontrols.toStdString());
     refresh();
   });
 
@@ -2366,7 +2366,7 @@ LateralControl::LateralControl() : AbstractControl("조향제어", "조향제어
     } else {
     }
     QString latcontrols = QString::number(latcontrol);
-    Params().write_db_value("LateralControlMethod", latcontrols.toStdString());
+    Params().put("LateralControlMethod", latcontrols.toStdString());
     refresh();
   });
   refresh();
@@ -2421,7 +2421,7 @@ PidKp::PidKp() : AbstractControl("Kp", "Kp값을 조정합니다.", "../assets/o
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("PidKp", values.toStdString());
+    Params().put("PidKp", values.toStdString());
     refresh();
   });
   
@@ -2434,7 +2434,7 @@ PidKp::PidKp() : AbstractControl("Kp", "Kp값을 조정합니다.", "../assets/o
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("PidKp", values.toStdString());
+    Params().put("PidKp", values.toStdString());
     refresh();
   });
   refresh();
@@ -2486,7 +2486,7 @@ PidKi::PidKi() : AbstractControl("Ki", "Ki값을 조정합니다.", "../assets/o
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("PidKi", values.toStdString());
+    Params().put("PidKi", values.toStdString());
     refresh();
   });
   
@@ -2499,7 +2499,7 @@ PidKi::PidKi() : AbstractControl("Ki", "Ki값을 조정합니다.", "../assets/o
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("PidKi", values.toStdString());
+    Params().put("PidKi", values.toStdString());
     refresh();
   });
   refresh();
@@ -2551,7 +2551,7 @@ PidKd::PidKd() : AbstractControl("Kd", "Kd값을 조정합니다.", "../assets/o
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("PidKd", values.toStdString());
+    Params().put("PidKd", values.toStdString());
     refresh();
   });
   
@@ -2564,7 +2564,7 @@ PidKd::PidKd() : AbstractControl("Kd", "Kd값을 조정합니다.", "../assets/o
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("PidKd", values.toStdString());
+    Params().put("PidKd", values.toStdString());
     refresh();
   });
   refresh();
@@ -2616,7 +2616,7 @@ PidKf::PidKf() : AbstractControl("Kf", "Kf값을 조정합니다.", "../assets/o
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("PidKf", values.toStdString());
+    Params().put("PidKf", values.toStdString());
     refresh();
   });
   
@@ -2629,7 +2629,7 @@ PidKf::PidKf() : AbstractControl("Kf", "Kf값을 조정합니다.", "../assets/o
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("PidKf", values.toStdString());
+    Params().put("PidKf", values.toStdString());
     refresh();
   });
   refresh();
@@ -2681,7 +2681,7 @@ IgnoreZone::IgnoreZone() : AbstractControl("IgnoreZone", "IgnoreZone값을 조�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("IgnoreZone", values.toStdString());
+    Params().put("IgnoreZone", values.toStdString());
     refresh();
   });
   
@@ -2694,7 +2694,7 @@ IgnoreZone::IgnoreZone() : AbstractControl("IgnoreZone", "IgnoreZone값을 조�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("IgnoreZone", values.toStdString());
+    Params().put("IgnoreZone", values.toStdString());
     refresh();
   });
   refresh();
@@ -2746,7 +2746,7 @@ OuterLoopGain::OuterLoopGain() : AbstractControl("OuterLoopGain", "OuterLoopGain
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OuterLoopGain", values.toStdString());
+    Params().put("OuterLoopGain", values.toStdString());
     refresh();
   });
   
@@ -2759,7 +2759,7 @@ OuterLoopGain::OuterLoopGain() : AbstractControl("OuterLoopGain", "OuterLoopGain
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("OuterLoopGain", values.toStdString());
+    Params().put("OuterLoopGain", values.toStdString());
     refresh();
   });
   refresh();
@@ -2811,7 +2811,7 @@ InnerLoopGain::InnerLoopGain() : AbstractControl("InnerLoopGain", "InnerLoopGain
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("InnerLoopGain", values.toStdString());
+    Params().put("InnerLoopGain", values.toStdString());
     refresh();
   });
   
@@ -2824,7 +2824,7 @@ InnerLoopGain::InnerLoopGain() : AbstractControl("InnerLoopGain", "InnerLoopGain
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("InnerLoopGain", values.toStdString());
+    Params().put("InnerLoopGain", values.toStdString());
     refresh();
   });
   refresh();
@@ -2876,7 +2876,7 @@ TimeConstant::TimeConstant() : AbstractControl("TimeConstant", "TimeConstant값�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("TimeConstant", values.toStdString());
+    Params().put("TimeConstant", values.toStdString());
     refresh();
   });
   
@@ -2889,7 +2889,7 @@ TimeConstant::TimeConstant() : AbstractControl("TimeConstant", "TimeConstant값�
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("TimeConstant", values.toStdString());
+    Params().put("TimeConstant", values.toStdString());
     refresh();
   });
   refresh();
@@ -2941,7 +2941,7 @@ ActuatorEffectiveness::ActuatorEffectiveness() : AbstractControl("ActuatorEffect
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("ActuatorEffectiveness", values.toStdString());
+    Params().put("ActuatorEffectiveness", values.toStdString());
     refresh();
   });
   
@@ -2954,7 +2954,7 @@ ActuatorEffectiveness::ActuatorEffectiveness() : AbstractControl("ActuatorEffect
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("ActuatorEffectiveness", values.toStdString());
+    Params().put("ActuatorEffectiveness", values.toStdString());
     refresh();
   });
   refresh();
@@ -3006,7 +3006,7 @@ Scale::Scale() : AbstractControl("Scale", "Scale값을 조정합니다.", "../as
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("Scale", values.toStdString());
+    Params().put("Scale", values.toStdString());
     refresh();
   });
   
@@ -3019,7 +3019,7 @@ Scale::Scale() : AbstractControl("Scale", "Scale값을 조정합니다.", "../as
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("Scale", values.toStdString());
+    Params().put("Scale", values.toStdString());
     refresh();
   });
   refresh();
@@ -3067,7 +3067,7 @@ LqrKi::LqrKi() : AbstractControl("LqrKi", "ki값을 조정합니다.", "../asset
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("LqrKi", values.toStdString());
+    Params().put("LqrKi", values.toStdString());
     refresh();
   });
   
@@ -3080,7 +3080,7 @@ LqrKi::LqrKi() : AbstractControl("LqrKi", "ki값을 조정합니다.", "../asset
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("LqrKi", values.toStdString());
+    Params().put("LqrKi", values.toStdString());
     refresh();
   });
   refresh();
@@ -3132,7 +3132,7 @@ DcGain::DcGain() : AbstractControl("DcGain", "DcGain값을 조정합니다.", ".
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("DcGain", values.toStdString());
+    Params().put("DcGain", values.toStdString());
     refresh();
   });
   
@@ -3145,7 +3145,7 @@ DcGain::DcGain() : AbstractControl("DcGain", "DcGain값을 조정합니다.", ".
     } else {
     }
     QString values = QString::number(value);
-    Params().write_db_value("DcGain", values.toStdString());
+    Params().put("DcGain", values.toStdString());
     refresh();
   });
   refresh();

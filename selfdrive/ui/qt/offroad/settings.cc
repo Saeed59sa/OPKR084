@@ -11,11 +11,13 @@
 #include "widgets/input.hpp"
 #include "widgets/toggle.hpp"
 #include "widgets/offroad_alerts.hpp"
+#include "widgets/scrollview.hpp"
 #include "widgets/controls.hpp"
 #include "widgets/ssh_keys.hpp"
 #include "common/params.h"
 #include "common/util.h"
 #include "selfdrive/hardware/hw.h"
+#include "home.hpp"
 
 
 QWidget * toggles_panel() {
@@ -61,6 +63,14 @@ QWidget * toggles_panel() {
                                            "\U0001f96c 차선 비활성화 모드 (알파) \U0001f96c",
                                            "이 모드에서 오픈파일럿은 차선을 따라 주행하지 않고 사람이 운전하는 것 처럼 주행합니다.",
                                            "../assets/offroad/icon_road.png"));
+
+#ifdef QCOM2
+  toggles_list->addWidget(horizontal_line());
+  toggles_list->addWidget(new ParamControl("EnableWideCamera",
+                                           "Enable use of Wide Angle Camera",
+                                           "Use wide angle camera for driving and ui. Only takes effect after reboot.",
+                                           "../assets/offroad/icon_openpilot.png"));
+#endif
   toggles_list->addWidget(horizontal_line());
   toggles_list->addWidget(new ParamControl("OpkrEnableDriverMonitoring",
                                            "운전자 모니터링 사용",
@@ -72,7 +82,7 @@ QWidget * toggles_panel() {
                                            "주행로그를 기록 후 콤마서버로 전송합니다.",
                                            "../assets/offroad/icon_shell.png"));
 
-  bool record_lock = Params().read_db_bool("RecordFrontLock");
+  bool record_lock = Params().getBool("RecordFrontLock");
   record_toggle->setEnabled(!record_lock);
 
   QWidget *widget = new QWidget;
@@ -97,19 +107,44 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
 
   offroad_btns.append(new ButtonControl("운전자 영상", "미리보기",
                                    "운전자 모니터링 카메라를 미리 보고 장치 장착 위치를 최적화하여 최상의 운전자 모니터링 환경을 제공하십시오. (차량이 꺼져 있어야 합니다.)",
-                                   [=]() { Params().write_db_value("IsDriverViewEnabled", "1", 1); }));
+                                   [=]() {
+                                      Params().putBool("IsDriverViewEnabled", true);
+                                      GLWindow::ui_state.scene.driver_view = true; }
+                                    ));
 
-//  offroad_btns.append(new ButtonControl("캘리브레이션 초기화", "리셋",
-//                                   "오픈파일럿을 사용하려면 장치를 왼쪽 또는 오른쪽으로 4°, 위 또는 아래로 5° 이내에 장착해야 합니다. 오픈파일럿이 지속적으로 보정되고 있으므로 재설정할 필요가 거의 없습니다.", [=]() {
-//    if (ConfirmationDialog::confirm("캘리브레이션을 초기화 하시겠습니까?")) {
-//      Params().delete_db_value("CalibrationParams");
+  QString resetCalibDesc = "오픈파일럿을 사용하려면 장치를 왼쪽 또는 오른쪽으로 4°, 위 또는 아래로 5° 이내에 장착해야 합니다. 오픈파일럿이 지속적으로 보정되고 있으므로 재설정할 필요가 거의 없습니다.";
+  ButtonControl *resetCalibBtn = new ButtonControl("캘리브레이션정보", "확인", resetCalibDesc, [=]() {
+//    if (ConfirmationDialog::confirm("Are you sure you want to reset calibration?")) {
+//      Params().remove("CalibrationParams");
 //    }
-//  }));
+  });
+  connect(resetCalibBtn, &ButtonControl::showDescription, [=]() {
+    QString desc = resetCalibDesc;
+    std::string calib_bytes = Params().get("CalibrationParams");
+    if (!calib_bytes.empty()) {
+      try {
+        AlignedBuffer aligned_buf;
+        capnp::FlatArrayMessageReader cmsg(aligned_buf.align(calib_bytes.data(), calib_bytes.size()));
+        auto calib = cmsg.getRoot<cereal::Event>().getLiveCalibration();
+        if (calib.getCalStatus() != 0) {
+          double pitch = calib.getRpyCalib()[1] * (180 / M_PI);
+          double yaw = calib.getRpyCalib()[2] * (180 / M_PI);
+          desc += QString(" 장치가 %1° %2 그리고 %3° %4. 위치해 있습니다.")
+                                .arg(QString::number(std::abs(pitch), 'g', 1), pitch > 0 ? "위로" : "아래로",
+                                     QString::number(std::abs(yaw), 'g', 1), yaw > 0 ? "오른쪽으로" : "왼쪽으로");
+        }
+      } catch (kj::Exception) {
+        qInfo() << "캘리브레이션 파라미터 유효하지 않음";
+      }
+    }
+    resetCalibBtn->setDescription(desc);
+  });
+  offroad_btns.append(resetCalibBtn);
 
   offroad_btns.append(new ButtonControl("트레이닝가이드 보기", "다시보기",
                                         "오픈파일럿에 대한 규칙, 기능, 제한내용 등을 확인하세요.", [=]() {
     if (ConfirmationDialog::confirm("트레이닝 가이드를 다시 확인하시겠습니까?")) {
-      Params().delete_db_value("CompletedTrainingVersion");
+      Params().remove("CompletedTrainingVersion");
       emit reviewTrainingGuide();
     }
   }));
@@ -117,7 +152,7 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
   QString brand = params.read_db_bool("Passive") ? "대시캠" : "오픈파일럿";
   offroad_btns.append(new ButtonControl(brand + " 제거", "제거", "", [=]() {
     if (ConfirmationDialog::confirm("제거하시겠습니까?")) {
-      Params().write_db_value("DoUninstall", "1");
+      Params().putBool("DoUninstall", true);
     }
   }));
 
@@ -137,7 +172,7 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
   cal_param_init_layout->addWidget(calinit_btn);
   QObject::connect(calinit_btn, &QPushButton::released, [=]() {
     if (ConfirmationDialog::confirm("캘리브레이션을 초기화할까요? 자동 재부팅됩니다.")) {
-      Params().delete_db_value("CalibrationParams");
+      Params().remove("CalibrationParams");
       QProcess::execute("reboot");
     }
   });
@@ -241,7 +276,7 @@ DeveloperPanel::DeveloperPanel(QWidget* parent) : QFrame(parent) {
 
 void DeveloperPanel::showEvent(QShowEvent *event) {
   Params params = Params();
-  std::string brand = params.read_db_bool("Passive") ? "대시캠" : "오픈파일럿";
+  std::string brand = params.getBool("Passive") ? "대시캠" : "오픈파일럿";
   QList<QPair<QString, std::string>> dev_params = {
     {"Version", brand + " v" + params.get("Version", false).substr(0, 14)},
     {"Git Branch", params.get("GitBranch", false)},
@@ -544,21 +579,8 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     sidebar_layout->addWidget(btn, 0, Qt::AlignRight);
 
     panel->setContentsMargins(50, 25, 50, 25);
-    QScrollArea *panel_frame = new QScrollArea;
-    panel_frame->setWidget(panel);
-    panel_frame->setWidgetResizable(true);
-    panel_frame->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    panel_frame->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    panel_frame->setStyleSheet("background-color:transparent;");
 
-    QScroller *scroller = QScroller::scroller(panel_frame->viewport());
-    auto sp = scroller->scrollerProperties();
-
-    sp.setScrollMetric(QScrollerProperties::VerticalOvershootPolicy, QVariant::fromValue<QScrollerProperties::OvershootPolicy>(QScrollerProperties::OvershootAlwaysOff));
-
-    scroller->grabGesture(panel_frame->viewport(), QScroller::LeftMouseButtonGesture);
-    scroller->setScrollerProperties(sp);
-
+    ScrollView *panel_frame = new ScrollView(panel, this);
     panel_widget->addWidget(panel_frame);
 
     QObject::connect(btn, &QPushButton::released, [=, w = panel_frame]() {
@@ -588,3 +610,10 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     }
   )");
 }
+
+void SettingsWindow::hideEvent(QHideEvent *event){
+#ifdef QCOM
+  HardwareEon::close_activities();
+#endif
+}
+

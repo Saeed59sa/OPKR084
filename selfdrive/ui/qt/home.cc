@@ -52,7 +52,8 @@ HomeWindow::HomeWindow(QWidget* parent) : QWidget(parent) {
 void HomeWindow::mousePressEvent(QMouseEvent* e) {
   UIState* ui_state = &glWindow->ui_state;
   if (GLWindow::ui_state.scene.driver_view) {
-    Params().write_db_value("IsDriverViewEnabled", "0", 1);
+    Params().putBool("IsDriverViewEnabled", false);
+    GLWindow::ui_state.scene.driver_view = false;
     return;
   }
 
@@ -102,11 +103,11 @@ void HomeWindow::mousePressEvent(QMouseEvent* e) {
       ui_state->scene.laneless_mode = 0;
     }
     if (ui_state->scene.laneless_mode == 0) {
-      Params().write_db_value("LanelessMode", "0", 1);
+      Params().put("LanelessMode", "0", 1);
     } else if (ui_state->scene.laneless_mode == 1) {
-      Params().write_db_value("LanelessMode", "1", 1);
+      Params().put("LanelessMode", "1", 1);
     } else if (ui_state->scene.laneless_mode == 2) {
-      Params().write_db_value("LanelessMode", "2", 1);
+      Params().put("LanelessMode", "2", 1);
     }
     return;
   }
@@ -139,7 +140,7 @@ OffroadHome::OffroadHome(QWidget* parent) : QWidget(parent) {
   QObject::connect(alert_notification, SIGNAL(released()), this, SLOT(openAlerts()));
   header_layout->addWidget(alert_notification, 0, Qt::AlignHCenter | Qt::AlignRight);
 
-  std::string brand = Params().read_db_bool("Passive") ? "대시캠" : "오픈파일럿";
+  std::string brand = Params().getBool("Passive") ? "대시캠" : "오픈파일럿";
   QLabel* version = new QLabel(QString::fromStdString(brand + " v" + Params().get("Version")));
   version->setStyleSheet(R"(font-size: 45px;)");
   header_layout->addWidget(version, 0, Qt::AlignHCenter | Qt::AlignRight);
@@ -151,6 +152,7 @@ OffroadHome::OffroadHome(QWidget* parent) : QWidget(parent) {
   center_layout = new QStackedLayout();
 
   QHBoxLayout* statsAndSetup = new QHBoxLayout();
+  statsAndSetup->setMargin(0);
 
   DriveStats* drive = new DriveStats;
   drive->setFixedSize(800, 800);
@@ -205,7 +207,7 @@ void OffroadHome::refresh() {
   // update alerts
 
   alerts_widget->refresh();
-  if (!alerts_widget->alerts.size() && !alerts_widget->updateAvailable) {
+  if (!alerts_widget->alertCount && !alerts_widget->updateAvailable) {
     emit closeAlerts();
     alert_notification->setVisible(false);
     return;
@@ -214,7 +216,7 @@ void OffroadHome::refresh() {
   if (alerts_widget->updateAvailable) {
     alert_notification->setText("업데이트");
   } else {
-    int alerts = alerts_widget->alerts.size();
+    int alerts = alerts_widget->alertCount;
     alert_notification->setText(QString::number(alerts) + " 경고" + (alerts == 1 ? "" : "S"));
   }
 
@@ -274,20 +276,15 @@ static void handle_display_state(UIState* s, bool user_input) {
   }
 }
 
-GLWindow::GLWindow(QWidget* parent) : QOpenGLWidget(parent) {
+GLWindow::GLWindow(QWidget* parent) : brightness_filter(BACKLIGHT_OFFROAD, BACKLIGHT_TS, BACKLIGHT_DT), QOpenGLWidget(parent) {
   timer = new QTimer(this);
   QObject::connect(timer, SIGNAL(timeout()), this, SLOT(timerUpdate()));
 
   backlight_timer = new QTimer(this);
   QObject::connect(backlight_timer, SIGNAL(timeout()), this, SLOT(backlightUpdate()));
 
-  int result = read_param(&brightness_b, "BRIGHTNESS_B", true);
-  result += read_param(&brightness_m, "BRIGHTNESS_M", true);
-  if (result != 0) {
-    brightness_b = 10.0;
-    brightness_m = 0.1;
-  }
-  smooth_brightness = BACKLIGHT_OFFROAD;
+  brightness_b = Params(true).get<float>("BRIGHTNESS_B").value_or(10.0);
+  brightness_m = Params(true).get<float>("BRIGHTNESS_M").value_or(0.1);
 }
 
 GLWindow::~GLWindow() {
@@ -316,29 +313,27 @@ void GLWindow::initializeGL() {
 
 void GLWindow::backlightUpdate() {
   // Update brightness
-  float k = (BACKLIGHT_DT / BACKLIGHT_TS) / (1.0f + BACKLIGHT_DT / BACKLIGHT_TS);
-
   float clipped_brightness = std::min(100.0f, (ui_state.scene.light_sensor * brightness_m) + brightness_b);
   if (!ui_state.scene.started) {
     clipped_brightness = BACKLIGHT_OFFROAD;
   }
 
+  int brightness = brightness_filter.update(clipped_brightness);
   // set brightness
   if (ui_state.nOpkrAutoScreenDimming && ui_state.scene.ignition && ui_state.sidebar_collapsed) {
     if (ui_state.scene.alert_text1 != "" || ui_state.scene.alert_text2 != "" || ui_state.scene.leftBlinker || ui_state.scene.rightBlinker) {
-      smooth_brightness = 80;
+      brightness = 80;
     } else {
-      smooth_brightness = 5;
+      brightness = 5;
     }
   } else {
     if (ui_state.nOpkrUIBrightness == 0) {
-      smooth_brightness = clipped_brightness * k + smooth_brightness * (1.0f - k);
+      brightness = brightness_filter.update(clipped_brightness);
     } else {
-      smooth_brightness = 100 * ui_state.nOpkrUIBrightness * 0.01;
+      brightness = 100 * ui_state.nOpkrUIBrightness * 0.01;
     }
   }
 
-  int brightness = smooth_brightness;
   if (!ui_state.awake) {
     brightness = 0;
     emit screen_shutoff();
@@ -367,19 +362,20 @@ void GLWindow::timerUpdate() {
 
   handle_display_state(&ui_state, false);
 
-  // scale volume with speed, max 1.0 min 0.5
+  // scale volume with speed
   if (ui_state.nOpkrUIVolumeBoost > 0) {
     sound.volume = ui_state.nOpkrUIVolumeBoost * 0.01;
   } else if (ui_state.nOpkrUIVolumeBoost < 0) {
-    sound.volume = util::map_val(ui_state.scene.car_state.getVEgo(), 0.f, 20.f,
-                               Hardware::MUTE, Hardware::MUTE);
+    sound.volume = 0.0;
   } else {
     sound.volume = util::map_val(ui_state.scene.car_state.getVEgo(), 0.f, 20.f,
                                Hardware::MIN_VOLUME, Hardware::MAX_VOLUME);
   }
 
   ui_update(&ui_state);
-  repaint();
+  if(GLWindow::ui_state.awake){
+    repaint();
+  }
   watchdog_kick();
 }
 
@@ -388,17 +384,15 @@ void GLWindow::resizeGL(int w, int h) {
 }
 
 void GLWindow::paintGL() {
-  if(GLWindow::ui_state.awake){
-    ui_draw(&ui_state);
+  ui_draw(&ui_state);
 
-    double cur_draw_t = millis_since_boot();
-    double dt = cur_draw_t - prev_draw_t;
-    if (dt > 66 && onroad && !ui_state.scene.driver_view) {
-      // warn on sub 15fps
-      LOGW("slow frame(%llu) time: %.2f", ui_state.sm->frame, dt);
-    }
-    prev_draw_t = cur_draw_t;
+  double cur_draw_t = millis_since_boot();
+  double dt = cur_draw_t - prev_draw_t;
+  if (dt > 66 && onroad && !ui_state.scene.driver_view) {
+    // warn on sub 15fps
+    LOGW("slow frame(%llu) time: %.2f", ui_state.sm->frame, dt);
   }
+  prev_draw_t = cur_draw_t;
 }
 
 void GLWindow::wake() {

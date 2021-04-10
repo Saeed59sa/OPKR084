@@ -171,7 +171,7 @@ class EngagementAlert(Alert):
 class NormalPermanentAlert(Alert):
   def __init__(self, alert_text_1, alert_text_2):
     super().__init__(alert_text_1, alert_text_2,
-                     AlertStatus.normal, AlertSize.mid,
+                     AlertStatus.normal, AlertSize.mid if len(alert_text_2) else AlertSize.small,
                      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., .2),
 
 # ********** alert callback functions **********
@@ -318,6 +318,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
       "순정 FCW: 충돌 위험",
       AlertStatus.critical, AlertSize.full,
       Priority.HIGHEST, VisualAlert.fcw, AudibleAlert.none, 1., 2., 2.),
+    ET.NO_ENTRY: NoEntryAlert("순정 FCW: 충돌 위험"),
   },
 
   EventName.fcw: {
@@ -348,19 +349,12 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
 
   EventName.vehicleModelInvalid: {
     ET.NO_ENTRY: NoEntryAlert("차량 매개 변수 식별 실패"),
+    ET.SOFT_DISABLE: SoftDisableAlert("차량 매개 변수 식별 실패"),
     ET.WARNING: Alert(
       "차량 매개 변수 식별 실패",
       "",
       AlertStatus.normal, AlertSize.small,
       Priority.LOWEST, VisualAlert.none, AudibleAlert.none, .0, .0, .1),
-  },
-
-  EventName.steerTempUnavailableMute: {
-    ET.WARNING: Alert(
-      "핸들을 잡아주세요",
-      "조향제어가 일시적으로 비활성화 되었습니다",
-      AlertStatus.userPrompt, AlertSize.mid,
-      Priority.LOW, VisualAlert.none, AudibleAlert.none, .2, .2, .2),
   },
 
   EventName.preDriverDistracted: {
@@ -600,11 +594,7 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
   },
 
   EventName.steerTempUnavailable: {
-    ET.WARNING: Alert(
-      "핸들을 잡아주세요",
-      "조향제어가 일시적으로 비활성화 되었습니다",
-      AlertStatus.userPrompt, AlertSize.mid,
-      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning1, .4, 2., 3.),
+    ET.SOFT_DISABLE: SoftDisableAlert("조향제어가 일시적으로 비활성화 되었습니다"),
     ET.NO_ENTRY: NoEntryAlert("조향제어가 일시적으로 비활성화 되었습니다",
                               duration_hud_alert=0.),
   },
@@ -730,9 +720,10 @@ EVENTS: Dict[int, Dict[str, Union[Alert, Callable[[Any, messaging.SubMaster, boo
                                audible_alert=AudibleAlert.chimeDisengage),
   },
 
-  EventName.controlsFailed: {
-    ET.IMMEDIATE_DISABLE: ImmediateDisableAlert("차량제어 불가"),
-    ET.NO_ENTRY: NoEntryAlert("차량제어 불가"),
+  EventName.accFaulted: {
+    ET.IMMEDIATE_DISABLE: ImmediateDisableAlert("크루즈 오류"),
+    ET.PERMANENT: NormalPermanentAlert("크루즈 오류", ""),
+    ET.NO_ENTRY: NoEntryAlert("크루즈 오류"),
   },
 
   EventName.controlsMismatch: {

@@ -14,7 +14,6 @@ class HardwareEon : public HardwareNone {
 public:
   static constexpr float MAX_VOLUME = 1.0;
   static constexpr float MIN_VOLUME = 0.5;
-  static constexpr float MUTE = 0.0;
 
   static std::string get_os_version() {
     return "NEOS " + util::read_file("/VERSION");
@@ -48,6 +47,13 @@ public:
     int ret = std::system("dumpsys SurfaceFlinger --list | grep -Fq 'com.android.settings'");
     launched_activity = ret == 0;
   }
+
+  static void close_activities() {
+    if(launched_activity){
+      std::system("pm disable com.android.settings && pm enable com.android.settings");
+    }
+  }
+
   static void launch_activity(std::string activity, std::string opts = "") {
     if (!launched_activity) {
       std::string cmd = "am start -n " + activity + " " + opts +

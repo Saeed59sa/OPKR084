@@ -111,8 +111,6 @@ typedef struct UIScene {
   bool is_rhd;
   bool driver_view;
 
-  int lead_status;
-  float lead_d_rel, lead_v_rel;
   std::string alert_text1;
   std::string alert_text2;
   std::string alertTextMsg1;
@@ -235,7 +233,6 @@ typedef struct UIState {
   std::map<std::string, int> images;
 
   SubMaster *sm;
-  PubMaster *pm;
 
   Sound *sound;
   UIStatus status;
@@ -250,8 +247,6 @@ typedef struct UIState {
 
   // device state
   bool awake;
-  int awake_timeout;
-  float light_sensor, accel_sensor, gyro_sensor;
 
   bool is_speed_over_limit;
   float speed_lim_off;
@@ -270,32 +265,9 @@ typedef struct UIState {
   bool sidebar_collapsed;
   Rect video_rect, viz_rect;
   float car_space_transform[6];
+  bool wide_camera;
+  float zoom;
 } UIState;
 
 void ui_init(UIState *s);
 void ui_update(UIState *s);
-
-int write_param_float(float param, const char* param_name, bool persistent_param = false);
-template <class T>
-int read_param(T* param, const char *param_name, bool persistent_param = false){
-  T param_orig = *param;
-  char *value;
-  size_t sz;
-
-  int result = Params(persistent_param).read_db_value(param_name, &value, &sz);
-  if (result == 0){
-    std::string s = std::string(value, sz); // value is not null terminated
-    free(value);
-
-    // Parse result
-    std::istringstream iss(s);
-    iss >> *param;
-
-    // Restore original value if parsing failed
-    if (iss.fail()) {
-      *param = param_orig;
-      result = -1;
-    }
-  }
-  return result;
-}

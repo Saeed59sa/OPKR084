@@ -46,20 +46,15 @@ DESIRES = {
 
 
 class LateralPlanner():
-  def __init__(self, CP):
-    self.LP = LanePlanner()
+  def __init__(self, CP, use_lanelines=True, wide_camera=False):
+    self.use_lanelines = use_lanelines
+    self.LP = LanePlanner(wide_camera)
 
     self.last_cloudlog_t = 0
     self.steer_rate_cost = CP.steerRateCost
 
     self.setup_mpc()
     self.solution_invalid_cnt = 0
-    self.use_lanelines = False
-    self.laneless_mode = 0
-    self.laneless_mode_status = False
-    self.laneless_mode_status_buffer = False
-    self.laneless_mode_at_stopping = False
-    self.laneless_mode_at_stopping_timer = 0
 
     if int(Params().get("OpkrAutoLaneChangeDelay", encoding='utf8')) == 0:
       self.lane_change_auto_delay = 0.0
@@ -83,6 +78,7 @@ class LateralPlanner():
     self.desire = log.LateralPlan.Desire.none
 
     self.path_xyz = np.zeros((TRAJECTORY_SIZE,3))
+    self.path_xyz_stds = np.ones((TRAJECTORY_SIZE,3))
     self.plan_yaw = np.zeros((TRAJECTORY_SIZE,))
     self.t_idxs = np.arange(TRAJECTORY_SIZE)
     self.y_pts = np.zeros(TRAJECTORY_SIZE)
@@ -99,7 +95,7 @@ class LateralPlanner():
 
   def setup_mpc(self):
     self.libmpc = libmpc_py.libmpc
-    self.libmpc.init(MPC_COST_LAT.PATH, MPC_COST_LAT.HEADING, self.steer_rate_cost)
+    self.libmpc.init()
 
     self.mpc_solution = libmpc_py.ffi.new("log_t *")
     self.cur_state = libmpc_py.ffi.new("state_t *")
@@ -114,8 +110,6 @@ class LateralPlanner():
     self.safe_desired_curvature_rate = 0.0
 
   def update(self, sm, CP):
-    self.use_lanelines = Params().get('EndToEndToggle') != b'1'
-    self.laneless_mode = int(Params().get("LanelessMode", encoding='utf8'))
     self.v_cruise_kph = sm['controlsState'].vCruise
     self.stand_still = sm['carState'].standStill
     try:
@@ -140,6 +134,8 @@ class LateralPlanner():
       self.path_xyz = np.column_stack([md.position.x, md.position.y, md.position.z])
       self.t_idxs = np.array(md.position.t)
       self.plan_yaw = list(md.orientation.z)
+    if len(md.orientation.xStd) == TRAJECTORY_SIZE:
+      self.path_xyz_stds = np.column_stack([md.position.xStd, md.position.yStd, md.position.zStd])
 
     # Lane change logic
     one_blinker = sm['carState'].leftBlinker != sm['carState'].rightBlinker
@@ -211,42 +207,13 @@ class LateralPlanner():
       self.LP.rll_prob *= self.lane_change_ll_prob
     if self.use_lanelines:
       d_path_xyz = self.LP.get_d_path(v_ego, self.t_idxs, self.path_xyz)
-      self.laneless_mode_status = False
-    elif not self.use_lanelines and self.laneless_mode == 0:
-      d_path_xyz = self.LP.get_d_path(v_ego, self.t_idxs, self.path_xyz)
-      self.laneless_mode_status = False
-    # use laneless, it might mitigate abrubt steering at stopping?
-    elif not self.use_lanelines and sm['radarState'].leadOne.dRel < 25 and sm['radarState'].leadOne.vRel < 0 and (abs(sm['controlsState'].steeringAngleDesiredDeg) - abs(sm['carState'].steeringAngleDeg)) > 2.5 and self.lane_change_state == LaneChangeState.off:
-      d_path_xyz = self.path_xyz
-      self.laneless_mode_status = True
-      self.laneless_mode_at_stopping = True
-      self.laneless_mode_at_stopping_timer = 200
-    elif self.laneless_mode_at_stopping and (v_ego < 1 or not self.laneless_mode_at_stopping_timer):
-      d_path_xyz = self.LP.get_d_path(v_ego, self.t_idxs, self.path_xyz)
-      self.laneless_mode_status = False
-      self.laneless_mode_at_stopping = False
-    elif not self.use_lanelines and self.laneless_mode == 1:
-      d_path_xyz = self.path_xyz
-      self.laneless_mode_status = True
-    elif not self.use_lanelines and self.laneless_mode == 2 and (self.LP.lll_prob < 0.3 or self.LP.rll_prob < 0.3) and self.lane_change_state == LaneChangeState.off:
-      d_path_xyz = self.path_xyz
-      self.laneless_mode_status = True
-      self.laneless_mode_status_buffer = True
-    elif not self.use_lanelines and self.laneless_mode == 2 and (self.LP.lll_prob > 0.5 and self.LP.rll_prob > 0.5) and self.laneless_mode_status_buffer and not self.laneless_mode_at_stopping and self.lane_change_state == LaneChangeState.off:
-      d_path_xyz = self.LP.get_d_path(v_ego, self.t_idxs, self.path_xyz)
-      self.laneless_mode_status = False
-      self.laneless_mode_status_buffer = False
-    elif not self.use_lanelines and self.laneless_mode == 2 and self.laneless_mode_status_buffer == True and self.lane_change_state == LaneChangeState.off:
-      d_path_xyz = self.path_xyz
-      self.laneless_mode_status = True
+      self.libmpc.set_weights(MPC_COST_LAT.PATH, MPC_COST_LAT.HEADING, CP.steerRateCost)
     else:
-      d_path_xyz = self.LP.get_d_path(v_ego, self.t_idxs, self.path_xyz)
-      self.laneless_mode_status = False
-      self.laneless_mode_status_buffer = False
-
-    if self.laneless_mode_at_stopping_timer > 0:
-      self.laneless_mode_at_stopping_timer -= 1
-
+      d_path_xyz = self.path_xyz
+      path_cost = np.clip(abs(self.path_xyz[0,1]/self.path_xyz_stds[0,1]), 0.5, 5.0) * MPC_COST_LAT.PATH
+      # Heading cost is useful at low speed, otherwise end of plan can be off-heading
+      heading_cost = interp(v_ego, [5.0, 10.0], [MPC_COST_LAT.HEADING, 0.0])
+      self.libmpc.set_weights(path_cost, heading_cost, CP.steerRateCost)
     y_pts = np.interp(v_ego * self.t_idxs[:MPC_N + 1], np.linalg.norm(d_path_xyz, axis=1), d_path_xyz[:,1])
     heading_pts = np.interp(v_ego * self.t_idxs[:MPC_N + 1], np.linalg.norm(self.path_xyz, axis=1), self.plan_yaw)
     self.y_pts = y_pts
@@ -290,7 +257,7 @@ class LateralPlanner():
     mpc_nans = any(math.isnan(x) for x in self.mpc_solution.curvature)
     t = sec_since_boot()
     if mpc_nans:
-      self.libmpc.init(MPC_COST_LAT.PATH, MPC_COST_LAT.HEADING, CP.steerRateCost)
+      self.libmpc.init()
       self.cur_state.curvature = measured_curvature
 
       if t > self.last_cloudlog_t + 5.0:
@@ -328,7 +295,6 @@ class LateralPlanner():
     plan_send.lateralPlan.vCruiseSet = float(self.v_cruise_kph)
     plan_send.lateralPlan.vCurvature = float(sm['controlsState'].curvature)
     plan_send.lateralPlan.steerAngleDesireDeg = float(sm['controlsState'].steeringAngleDesiredDeg)
-    plan_send.lateralPlan.lanelessMode = bool(self.laneless_mode_status)
 
     if self.stand_still:
       self.standstill_elapsed_time += DT_MDL
