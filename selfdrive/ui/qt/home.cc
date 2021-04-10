@@ -309,6 +309,7 @@ void GLWindow::initializeGL() {
   prev_draw_t = millis_since_boot();
   timer->start(1000 / UI_FREQ);
   backlight_timer->start(BACKLIGHT_DT * 1000);
+  ui_state.scene.laneless_mode = Params(true).get<int>("LanelessMode");
 }
 
 void GLWindow::backlightUpdate() {
