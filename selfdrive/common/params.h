@@ -3,7 +3,6 @@
 #include <stddef.h>
 #include <map>
 #include <string>
-#include <vector>
 #include <sstream>
 
 #define ERR_NO_VALUE -33
@@ -24,9 +23,6 @@ public:
 
   // read all values
   int read_db_all(std::map<std::string, std::string> *params);
-  std::string opkrget(std::string key, bool block=false);
-  int read_db_value(const char* key, char** value, size_t* value_sz);
-  int read_db_value_blocking(const char* key, char** value, size_t* value_sz);
 
   // read a value
   std::string get(const char *key, bool block = false);
