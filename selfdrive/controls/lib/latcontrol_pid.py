@@ -35,7 +35,7 @@ class LatControlPID():
       self.mpc_frame = 0
 
   def update(self, active, CS, CP, VM, params, lat_plan):
-    if params.get_bool("OpkrLiveTune"):
+    if self.params.get_bool("OpkrLiveTune"):
       self.live_tune(CP)
 
     pid_log = log.ControlsState.LateralPIDState.new_message()

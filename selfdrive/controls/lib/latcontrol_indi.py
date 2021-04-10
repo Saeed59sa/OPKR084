@@ -95,7 +95,7 @@ class LatControlINDI():
     self.outer_loop_gain = interp(self.speed, self._outer_loop_gain[0], self._outer_loop_gain[1])
     self.inner_loop_gain = interp(self.speed, self._inner_loop_gain[0], self._inner_loop_gain[1])
 
-    if params.get_bool("OpkrLiveTune"):
+    if self.params.get_bool("OpkrLiveTune"):
       self.live_tune(CP)
 
     # Update Kalman filter
