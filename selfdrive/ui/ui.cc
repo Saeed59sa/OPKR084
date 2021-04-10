@@ -77,15 +77,10 @@ void ui_init(UIState *s) {
 
   Params params;
   s->nOpkrAutoScreenDimming = params.getBool("OpkrAutoScreenDimming");
-  s->nOpkrUIBrightness = params.getBool("OpkrUIBrightness");
-  s->nOpkrUIVolumeBoost = params.getBool("OpkrUIVolumeBoost");
   s->nDebugUi1 = params.getBool("DebugUi1");
   s->nDebugUi2 = params.getBool("DebugUi2");
   s->nOpkrBlindSpotDetect = params.getBool("OpkrBlindSpotDetect");
-  s->lat_control = params.getBool("LateralControlMethod");
   s->driving_record = params.getBool("OpkrDrivingRecord");
-  s->speed_lim_off = params.getBool("OpkrSpeedLimitOffset");
-  s->scene.laneless_mode = params.getBool("LanelessMode");
   params.put("LimitSetSpeedCamera", "0", 1);
 
   ui_nvg_init(s);
@@ -374,9 +369,6 @@ static void update_params(UIState *s) {
   if (frame % (5*UI_FREQ) == 0) {
     scene.is_metric = params.getBool("IsMetric");
     s->is_OpenpilotViewEnabled = params.getBool("IsOpenpilotViewEnabled");
-    s->nOpkrUIBrightness = params.getBool("OpkrUIBrightness");
-    s->nOpkrUIVolumeBoost = params.getBool("OpkrUIVolumeBoost");
-    s->lat_control = params.getBool("LateralControlMethod");
     s->driving_record = params.getBool("OpkrDrivingRecord");
     scene.end_to_end = params.getBool("EndToEndToggle");
   } else if (frame % (6*UI_FREQ) == 0) {

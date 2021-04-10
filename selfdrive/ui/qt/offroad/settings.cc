@@ -149,7 +149,7 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
     }
   }));
 
-  QString brand = params.read_db_bool("Passive") ? "대시캠" : "오픈파일럿";
+  QString brand = params.getBool("Passive") ? "대시캠" : "오픈파일럿";
   offroad_btns.append(new ButtonControl(brand + " 제거", "제거", "", [=]() {
     if (ConfirmationDialog::confirm("제거하시겠습니까?")) {
       Params().putBool("DoUninstall", true);
