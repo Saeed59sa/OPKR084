@@ -74,7 +74,7 @@ void safety_setter_thread() {
       return;
     };
 
-    std::vector<char> value_vin = Params().read_db_bytes("CarVin");
+    std::vector<char> value_vin = Params().get("CarVin");
     if (value_vin.size() > 0) {
       // sanity check VIN format
       assert(value_vin.size() == 17);
@@ -96,7 +96,7 @@ void safety_setter_thread() {
       return;
     };
 
-    params = Params().read_db_bytes("CarParams");
+    params = Params().get("CarParams");
     if (params.size() > 0) break;
     util::sleep_for(100);
   }
@@ -135,7 +135,7 @@ bool usb_connect() {
 
   const char *fw_sig_buf = panda->get_firmware_version();
   if (fw_sig_buf){
-    params.write_db_value("PandaFirmware", fw_sig_buf, 128);
+    params.put("PandaFirmware", fw_sig_buf, 128);
 
     // Convert to hex for offroad
     char fw_sig_hex_buf[16] = {0};
@@ -144,7 +144,7 @@ bool usb_connect() {
       fw_sig_hex_buf[2*i+1] = NIBBLE_TO_HEX((uint8_t)fw_sig_buf[i] & 0xF);
     }
 
-    params.write_db_value("PandaFirmwareHex", fw_sig_hex_buf, 16);
+    params.put("PandaFirmwareHex", fw_sig_hex_buf, 16);
     LOGW("fw signature: %.*s", 16, fw_sig_hex_buf);
 
     delete[] fw_sig_buf;
@@ -155,7 +155,7 @@ bool usb_connect() {
   if (serial_buf) {
     size_t serial_sz = strnlen(serial_buf, 16);
 
-    params.write_db_value("PandaDongleId", serial_buf, serial_sz);
+    params.put("PandaDongleId", serial_buf, serial_sz);
     LOGW("panda serial: %.*s", serial_sz, serial_buf);
 
     delete[] serial_buf;
@@ -320,9 +320,9 @@ void panda_state_thread() {
 
     // clear VIN, CarParams, and set new safety on car start
     if (ignition && !ignition_last) {
-      int result = params.delete_db_value("CarVin");
+      int result = params.remove("CarVin");
       assert((result == 0) || (result == ERR_NO_VALUE));
-      result = params.delete_db_value("CarParams");
+      result = params.remove("CarParams");
       assert((result == 0) || (result == ERR_NO_VALUE));
 
       if (!safety_setter_thread_running) {
