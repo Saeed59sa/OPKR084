@@ -114,24 +114,25 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
 
   QString resetCalibDesc = "오픈파일럿을 사용하려면 장치를 왼쪽 또는 오른쪽으로 4°, 위 또는 아래로 5° 이내에 장착해야 합니다. 오픈파일럿이 지속적으로 보정되고 있으므로 재설정할 필요가 거의 없습니다.";
   ButtonControl *resetCalibBtn = new ButtonControl("캘리브레이션정보", "확인", resetCalibDesc, [=]() {
-    std::string calib_bytesa = Params().get("CalibrationParams");
-    if (!calib_bytesa.empty()) {
+    QString desc = "왼쪽/오른쪽 4° 및 위/아래 5° 이내";
+    std::string calib_bytes = Params().get("CalibrationParams");
+    if (!calib_bytes.empty()) {
       try {
-        AlignedBuffer aligned_bufa;
-        capnp::FlatArrayMessageReader cmsg(aligned_bufa.align(calib_bytesa.data(), calib_bytesa.size()));
-        auto caliba = cmsg.getRoot<cereal::Event>().getLiveCalibration();
-        if (caliba.getCalStatus() != 0) {
-          double pitcha = caliba.getRpyCalib()[1] * (180 / M_PI);
-          double yawa = caliba.getRpyCalib()[2] * (180 / M_PI);
-          QString desca = QString("장치가 %1° %2 그리고 %3° %4 위치해 있습니다.")
-                                .arg(QString::number(std::abs(pitcha), 'g', 1), pitcha > 0 ? "위로" : "아래로",
-                                     QString::number(std::abs(yawa), 'g', 1), yawa > 0 ? "오른쪽으로" : "왼쪽으로");
+        AlignedBuffer aligned_buf;
+        capnp::FlatArrayMessageReader cmsg(aligned_buf.align(calib_bytes.data(), calib_bytes.size()));
+        auto calib = cmsg.getRoot<cereal::Event>().getLiveCalibration();
+        if (calib.getCalStatus() != 0) {
+          double pitch = calib.getRpyCalib()[1] * (180 / M_PI);
+          double yaw = calib.getRpyCalib()[2] * (180 / M_PI);
+          desc += QString("\n장치가 %1° %2 그리고 %3° %4 위치해 있습니다.")
+                                .arg(QString::number(std::abs(pitch), 'g', 1), pitch > 0 ? "위로" : "아래로",
+                                     QString::number(std::abs(yaw), 'g', 1), yaw > 0 ? "오른쪽으로" : "왼쪽으로");
         }
       } catch (kj::Exception) {
         qInfo() << "캘리브레이션 파라미터 유효하지 않음";
       }
     }
-    if (ConfirmationDialog::confirm(desca)) {
+    if (ConfirmationDialog::confirm(desc)) {
       //Params().remove("CalibrationParams");
     }
   });
