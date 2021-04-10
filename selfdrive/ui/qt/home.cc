@@ -3,6 +3,7 @@
 #include <iostream>
 #include <thread>
 #include <exception>
+#include <string>
 
 #include <QDateTime>
 #include <QHBoxLayout>
@@ -309,7 +310,7 @@ void GLWindow::initializeGL() {
   prev_draw_t = millis_since_boot();
   timer->start(1000 / UI_FREQ);
   backlight_timer->start(BACKLIGHT_DT * 1000);
-  ui_state.scene.laneless_mode = Params(true).get("LanelessMode");
+  ui_state.scene.laneless_mode = std::stoi(Params().get("LanelessMode"));
 }
 
 void GLWindow::backlightUpdate() {
