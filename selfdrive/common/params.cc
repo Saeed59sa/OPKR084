@@ -258,6 +258,34 @@ std::string Params::opkrget(std::string key, bool block){
   }
 }
 
+int Params::read_db_value(const char* key, char** value, size_t* value_sz) {
+  std::string path = params_path + "/d/" + std::string(key);
+  *value = static_cast<char*>(read_file(path.c_str(), value_sz));
+  if (*value == NULL) {
+    return -22;
+  }
+  return 0;
+}
+
+int Params::read_db_value_blocking(const char* key, char** value, size_t* value_sz) {
+  params_do_exit = 0;
+  void (*prev_handler_sigint)(int) = std::signal(SIGINT, params_sig_handler);
+  void (*prev_handler_sigterm)(int) = std::signal(SIGTERM, params_sig_handler);
+
+  while (!params_do_exit) {
+    const int result = read_db_value(key, value, value_sz);
+    if (result == 0) {
+      break;
+    } else {
+      util::sleep_for(100); // 0.1 s
+    }
+  }
+
+  std::signal(SIGINT, prev_handler_sigint);
+  std::signal(SIGTERM, prev_handler_sigterm);
+  return params_do_exit; // Return 0 if we had no interrupt
+}
+
 int Params::read_db_all(std::map<std::string, std::string> *params) {
   FileLock file_lock(params_path + "/.lock", LOCK_SH);
   std::lock_guard<FileLock> lk(file_lock);
