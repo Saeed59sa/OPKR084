@@ -453,10 +453,12 @@ QWidget * user_panel(QWidget * parent) {
                                         }
                                       }));
   layout->addWidget(horizontal_line());
-  layout->addWidget(new CarForceSet());
-  QString car_model = QString::fromStdString(Params().get("CarModel", false));
-  layout->addWidget(new LabelControl("현재차량모델", ""));
-  layout->addWidget(new LabelControl(car_model, ""));
+  layout->addWidget(new CarRecognition());
+  //layout->addWidget(new CarForceSet());
+  //QString car_model = QString::fromStdString(Params().get("CarModel", false));
+  //layout->addWidget(new LabelControl("현재차량모델", ""));
+  //layout->addWidget(new LabelControl(car_model, ""));
+
   layout->addWidget(horizontal_line());
   layout->addWidget(new LabelControl("판다 값", "주의要"));
   layout->addWidget(new MaxSteer());
