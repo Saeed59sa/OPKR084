@@ -210,7 +210,7 @@ CarRecognition::CarRecognition() : AbstractControl("차량강제인식", "핑거
 
   QObject::connect(&btn, &QPushButton::released, [=]() {
     if (btn.text() == "설정") {
-      Params().put("CarModel", carname_label.toStdString());
+      Params().put("CarModel", toStdString(carname_label));
       QProcess::execute("/data/openpilot/car_force_set.sh");
     } else {
       Params().put("CarModel", "");
