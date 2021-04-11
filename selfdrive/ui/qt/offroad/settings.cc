@@ -3,6 +3,8 @@
 #include <sstream>
 #include <cassert>
 #include <QProcess>
+#include <QAction>
+#include <QMenu>
 
 #ifndef QCOM
 #include "networking.hpp"
@@ -453,6 +455,20 @@ QWidget * user_panel(QWidget * parent) {
                                         }
                                       }));
   layout->addWidget(horizontal_line());
+
+  // Car Force Recognition
+  QMenu *vehicle_select_menu = new QMenu();
+  vehicle_select_menu->addAction("K5", [=]() {});
+  vehicle_select_menu->addAction("K7", [=]() {});
+  vehicle_select_menu->addAction("K8", [=]() {});
+  vehicle_select_menu->addAction("K9", [=]() {});
+
+  QPushButton *set_vehicle_btn = new QPushButton("차량선택");
+  set_vehicle_btn->setMenu(vehicle_select_menu);
+  layout->addWidget(set_vehicle_btn, 0, Qt::AlignBottom);
+
+  layout->addWidget(horizontal_line());
+
   layout->addWidget(new CarForceSet());
   QString car_model = QString::fromStdString(Params().get("CarModel", false));
   layout->addWidget(new LabelControl("현재차량모델", ""));
