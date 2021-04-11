@@ -372,7 +372,7 @@ private:
   QString carname;
   QLabel carname_label;
 
-  void refresh();
+  void refresh(QString carname);
 };
 
 class CarForceSet : public AbstractControl {
