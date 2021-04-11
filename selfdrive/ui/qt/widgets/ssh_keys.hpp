@@ -361,6 +361,20 @@ private:
 };
 
 // 차량 강제등록
+class CarRecognition : public AbstractControl {
+  Q_OBJECT
+
+public:
+  CarRecognition();
+
+private:
+  QPushButton btn;
+  QString carname;
+  QLabel carname_label;
+
+  void refresh();
+};
+
 class CarForceSet : public AbstractControl {
   Q_OBJECT
 

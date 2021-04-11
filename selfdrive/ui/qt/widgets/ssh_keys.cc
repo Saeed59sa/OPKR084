@@ -4,6 +4,8 @@
 #include "widgets/ssh_keys.hpp"
 #include "common/params.h"
 #include <QProcess>
+#include <QAction>
+#include <QMenu>
 #include "home.hpp"
 
 SshControl::SshControl() : AbstractControl("SSH 키 설정", "경고: 이렇게 하면 GitHub 설정의 모든 공개 키에 대한 SSH 액세스 권한이 부여됩니다. 사용자 이외의 GitHub 사용자 이름을 입력하지 마십시오. 콤마 직원은 절대 GitHub 사용자 이름을 추가하라는 요청을 하지 않습니다.", "") {
@@ -144,6 +146,89 @@ void OpenpilotView::refresh() {
     btn.setText("미리보기해제");
   } else {
     btn.setText("미리보기");
+  }
+}
+
+CarRecognition::CarRecognition() : AbstractControl("차량강제인식", "핑거프린트 문제로 차량인식이 안될경우 차량을 선택하여 강제 인식합니다.", "") {
+
+  // setup widget
+  hlayout->addStretch(1);
+  
+  carname_label.setAlignment(Qt::AlignVCenter);
+  carname_label.setStyleSheet("color: #aaaaaa");
+  hlayout->addWidget(&carname_label);
+
+  QMenu *vehicle_select_menu = new QMenu();
+  vehicle_select_menu->addAction("GENESIS", [=]() {carname_label.setText("GENESIS");});
+  vehicle_select_menu->addAction("GENESIS_G70", [=]() {carname_label.setText("GENESIS_G70");});
+  vehicle_select_menu->addAction("GENESIS_G80", [=]() {carname_label.setText("GENESIS_G80");});
+  vehicle_select_menu->addAction("GENESIS_G90", [=]() {carname_label.setText("GENESIS_G90");});
+  vehicle_select_menu->addAction("AVANTE", [=]() {carname_label.setText("AVANTE");});
+  vehicle_select_menu->addAction("I30", [=]() {carname_label.setText("I30");});
+  vehicle_select_menu->addAction("SONATA", [=]() {carname_label.setText("SONATA");});
+  vehicle_select_menu->addAction("SONATA_HEV", [=]() {carname_label.setText("SONATA_HEV");});
+  vehicle_select_menu->addAction("SONATA19", [=]() {carname_label.setText("SONATA19");});
+  vehicle_select_menu->addAction("SONATA19_HEV", [=]() {carname_label.setText("SONATA19_HEV");});
+  vehicle_select_menu->addAction("KONA", [=]() {carname_label.setText("KONA");});
+  vehicle_select_menu->addAction("KONA_EV", [=]() {carname_label.setText("KONA_EV");});
+  vehicle_select_menu->addAction("KONA_HEV", [=]() {carname_label.setText("KONA_HEV");});
+  vehicle_select_menu->addAction("IONIQ_EV", [=]() {carname_label.setText("IONIQ_EV");});
+  vehicle_select_menu->addAction("IONIQ_HEV", [=]() {carname_label.setText("IONIQ_HEV");});
+  vehicle_select_menu->addAction("SANTA_FE", [=]() {carname_label.setText("SANTA_FE");});
+  vehicle_select_menu->addAction("PALISADE", [=]() {carname_label.setText("PALISADE");});
+  vehicle_select_menu->addAction("VELOSTER", [=]() {carname_label.setText("VELOSTER");});
+  vehicle_select_menu->addAction("GRANDEUR", [=]() {carname_label.setText("GRANDEUR");});
+  vehicle_select_menu->addAction("GRANDEUR_HEV", [=]() {carname_label.setText("GRANDEUR_HEV");});
+  vehicle_select_menu->addAction("NEXO", [=]() {carname_label.setText("NEXO");});
+  vehicle_select_menu->addAction("K3", [=]() {carname_label.setText("K3");});
+  vehicle_select_menu->addAction("K5", [=]() {carname_label.setText("K5");});
+  vehicle_select_menu->addAction("K5_HEV", [=]() {carname_label.setText("K5_HEV");});
+  vehicle_select_menu->addAction("K7", [=]() {carname_label.setText("K7");});
+  vehicle_select_menu->addAction("K7_HEV", [=]() {carname_label.setText("K7_HEV");});
+  vehicle_select_menu->addAction("SPORTAGE", [=]() {carname_label.setText("SPORTAGE");});
+  vehicle_select_menu->addAction("SORENTO", [=]() {carname_label.setText("SORENTO");});
+  vehicle_select_menu->addAction("STINGER", [=]() {carname_label.setText("STINGER");});
+  vehicle_select_menu->addAction("NIRO_EV", [=]() {carname_label.setText("NIRO_EV");});
+  vehicle_select_menu->addAction("NIRO_HEV", [=]() {carname_label.setText("NIRO_HEV");});
+  vehicle_select_menu->addAction("CEED", [=]() {carname_label.setText("CEED");});
+  vehicle_select_menu->addAction("SELTOS", [=]() {carname_label.setText("SELTOS");});
+
+  QPushButton *set_vehicle_btn = new QPushButton("차량선택");
+  set_vehicle_btn->setMenu(vehicle_select_menu);
+  hlayout->addWidget(set_vehicle_btn, 0, Qt::AlignBottom);
+
+  btn.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+  btn.setFixedSize(200, 100);
+  hlayout->addWidget(&btn);
+
+  QObject::connect(&btn, &QPushButton::released, [=]() {
+    if (btn.text() == "설정") {
+      Params().put("CarModel", carname_label.toStdString());
+      QProcess::execute("/data/openpilot/car_force_set.sh");
+    } else {
+      Params().put("CarModel", "");
+      //Params().remove("CarModel");
+      refresh();
+    }
+  });
+  refresh();
+}
+
+void CarRecognition::refresh() {
+  QString paramc = QString::fromStdString(Params().get("CarModel"));
+  if (paramc.length()) {
+    carname_label.setText(QString::fromStdString(Params().get("CarModel")));
+    btn.setText("제거");
+  } else {
+    carname_label.setText("");
+    btn.setText("설정");
   }
 }
 
