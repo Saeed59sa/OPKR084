@@ -154,7 +154,7 @@ CarRecognition::CarRecognition() : AbstractControl("차량강제인식", "핑거
   // setup widget
   hlayout->addStretch(1);
   
-  carname_label.setAlignment(Qt::AlignVCenter);
+  //carname_label.setAlignment(Qt::AlignVCenter);
   carname_label.setStyleSheet("color: #aaaaaa");
   hlayout->addWidget(&carname_label);
   QMenu *vehicle_select_menu = new QMenu();
@@ -194,7 +194,7 @@ CarRecognition::CarRecognition() : AbstractControl("차량강제인식", "핑거
 
   QPushButton *set_vehicle_btn = new QPushButton("차량선택");
   set_vehicle_btn->setMenu(vehicle_select_menu);
-  hlayout->addWidget(set_vehicle_btn, 0, Qt::AlignBottom);
+  hlayout->addWidget(set_vehicle_btn);
 
   btn.setStyleSheet(R"(
     padding: 0;
@@ -213,6 +213,7 @@ CarRecognition::CarRecognition() : AbstractControl("차량강제인식", "핑거
       QProcess::execute("/data/openpilot/car_force_set.sh");
       refresh(carname);
     } else {
+      carname = "";
       //Params().put("CarModel", "");
       Params().remove("CarModel");
       refresh(carname);
