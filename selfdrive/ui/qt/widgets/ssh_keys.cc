@@ -220,7 +220,7 @@ CarRecognition::CarRecognition() : AbstractControl("차량강제인식", "핑거
   refresh(carname);
 }
 
-void CarRecognition::refresh(Qstring carname) {
+void CarRecognition::refresh(QString carname) {
   QString param = QString::fromStdString(Params().get("CarModel"));
   if (param.length()) {
     carname_label.setText(carname);
