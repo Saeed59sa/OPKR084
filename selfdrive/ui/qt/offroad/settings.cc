@@ -462,6 +462,27 @@ QWidget * user_panel(QWidget * parent) {
   vehicle_select_menu->addAction("K7", [=]() {});
   vehicle_select_menu->addAction("K8", [=]() {});
   vehicle_select_menu->addAction("K9", [=]() {});
+  vehicle_select_menu->addAction("AVANTE", [=]() {})
+  vehicle_select_menu->addAction("SONATA", [=]() {});
+  vehicle_select_menu->addAction("PALISADE", [=]() {});
+  vehicle_select_menu->addAction("SELTOS", [=]() {});
+  vehicle_select_menu->addAction("TEST1", [=]() {});
+  vehicle_select_menu->addAction("TEST2", [=]() {});
+  vehicle_select_menu->addAction("TEST3", [=]() {});
+  vehicle_select_menu->addAction("TEST4", [=]() {});
+  vehicle_select_menu->addAction("TEST5", [=]() {});
+  vehicle_select_menu->addAction("TEST6", [=]() {});
+  vehicle_select_menu->addAction("TEST7", [=]() {});
+  vehicle_select_menu->addAction("TEST8", [=]() {});
+  vehicle_select_menu->addAction("TEST9", [=]() {});
+  vehicle_select_menu->addAction("TEST10", [=]() {});
+  vehicle_select_menu->addAction("TEST11", [=]() {});
+  vehicle_select_menu->addAction("TEST12", [=]() {});
+  vehicle_select_menu->addAction("TEST13", [=]() {});
+  vehicle_select_menu->addAction("TEST14", [=]() {});
+  vehicle_select_menu->addAction("TEST15", [=]() {});
+  vehicle_select_menu->addAction("TEST16", [=]() {});
+  vehicle_select_menu->addAction("TEST17", [=]() {});
 
   QPushButton *set_vehicle_btn = new QPushButton("차량선택");
   set_vehicle_btn->setMenu(vehicle_select_menu);
