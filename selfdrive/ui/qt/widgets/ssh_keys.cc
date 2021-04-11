@@ -208,7 +208,7 @@ CarRecognition::CarRecognition() : AbstractControl("차량강제인식", "핑거
   hlayout->addWidget(&btn);
 
   QObject::connect(&btn, &QPushButton::released, [=]() {
-    if (btn.text() == "설정") {
+    if (btn.text() == "설정" && carname.length()) {
       Params().put("CarModel", carname.toStdString());
       QProcess::execute("/data/openpilot/car_force_set.sh");
       refresh(carname);
