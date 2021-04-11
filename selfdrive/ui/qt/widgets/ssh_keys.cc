@@ -154,44 +154,44 @@ CarRecognition::CarRecognition() : AbstractControl("차량강제인식", "핑거
   // setup widget
   hlayout->addStretch(1);
   
-  QString carname_label = "";
+  QString carname = "";
   carname_label.setAlignment(Qt::AlignVCenter);
   carname_label.setStyleSheet("color: #aaaaaa");
   hlayout->addWidget(&carname_label);
   QMenu *vehicle_select_menu = new QMenu();
-  vehicle_select_menu->addAction("GENESIS", [=]() {carname_label.setText("GENESIS");});
-  vehicle_select_menu->addAction("GENESIS_G70", [=]() {carname_label.setText("GENESIS_G70");});
-  vehicle_select_menu->addAction("GENESIS_G80", [=]() {carname_label.setText("GENESIS_G80");});
-  vehicle_select_menu->addAction("GENESIS_G90", [=]() {carname_label.setText("GENESIS_G90");});
-  vehicle_select_menu->addAction("AVANTE", [=]() {carname_label.setText("AVANTE");});
-  vehicle_select_menu->addAction("I30", [=]() {carname_label.setText("I30");});
-  vehicle_select_menu->addAction("SONATA", [=]() {carname_label.setText("SONATA");});
-  vehicle_select_menu->addAction("SONATA_HEV", [=]() {carname_label.setText("SONATA_HEV");});
-  vehicle_select_menu->addAction("SONATA19", [=]() {carname_label.setText("SONATA19");});
-  vehicle_select_menu->addAction("SONATA19_HEV", [=]() {carname_label.setText("SONATA19_HEV");});
-  vehicle_select_menu->addAction("KONA", [=]() {carname_label.setText("KONA");});
-  vehicle_select_menu->addAction("KONA_EV", [=]() {carname_label.setText("KONA_EV");});
-  vehicle_select_menu->addAction("KONA_HEV", [=]() {carname_label.setText("KONA_HEV");});
-  vehicle_select_menu->addAction("IONIQ_EV", [=]() {carname_label.setText("IONIQ_EV");});
-  vehicle_select_menu->addAction("IONIQ_HEV", [=]() {carname_label.setText("IONIQ_HEV");});
-  vehicle_select_menu->addAction("SANTA_FE", [=]() {carname_label.setText("SANTA_FE");});
-  vehicle_select_menu->addAction("PALISADE", [=]() {carname_label.setText("PALISADE");});
-  vehicle_select_menu->addAction("VELOSTER", [=]() {carname_label.setText("VELOSTER");});
-  vehicle_select_menu->addAction("GRANDEUR", [=]() {carname_label.setText("GRANDEUR");});
-  vehicle_select_menu->addAction("GRANDEUR_HEV", [=]() {carname_label.setText("GRANDEUR_HEV");});
-  vehicle_select_menu->addAction("NEXO", [=]() {carname_label.setText("NEXO");});
-  vehicle_select_menu->addAction("K3", [=]() {carname_label.setText("K3");});
-  vehicle_select_menu->addAction("K5", [=]() {carname_label.setText("K5");});
-  vehicle_select_menu->addAction("K5_HEV", [=]() {carname_label.setText("K5_HEV");});
-  vehicle_select_menu->addAction("K7", [=]() {carname_label.setText("K7");});
-  vehicle_select_menu->addAction("K7_HEV", [=]() {carname_label.setText("K7_HEV");});
-  vehicle_select_menu->addAction("SPORTAGE", [=]() {carname_label.setText("SPORTAGE");});
-  vehicle_select_menu->addAction("SORENTO", [=]() {carname_label.setText("SORENTO");});
-  vehicle_select_menu->addAction("STINGER", [=]() {carname_label.setText("STINGER");});
-  vehicle_select_menu->addAction("NIRO_EV", [=]() {carname_label.setText("NIRO_EV");});
-  vehicle_select_menu->addAction("NIRO_HEV", [=]() {carname_label.setText("NIRO_HEV");});
-  vehicle_select_menu->addAction("CEED", [=]() {carname_label.setText("CEED");});
-  vehicle_select_menu->addAction("SELTOS", [=]() {carname_label.setText("SELTOS");});
+  vehicle_select_menu->addAction("GENESIS", [=]() {carname_label.setText("GENESIS"); carname = "GENESIS";});
+  vehicle_select_menu->addAction("GENESIS_G70", [=]() {carname_label.setText("GENESIS_G70"); carname = "GENESIS_G70";});
+  vehicle_select_menu->addAction("GENESIS_G80", [=]() {carname_label.setText("GENESIS_G80"); carname = "GENESIS_G80";});
+  vehicle_select_menu->addAction("GENESIS_G90", [=]() {carname_label.setText("GENESIS_G90"); carname = "GENESIS_G90";});
+  vehicle_select_menu->addAction("AVANTE", [=]() {carname_label.setText("AVANTE"); carname = "AVANTE";});
+  vehicle_select_menu->addAction("I30", [=]() {carname_label.setText("I30"); carname = "I30";});
+  vehicle_select_menu->addAction("SONATA", [=]() {carname_label.setText("SONATA"); carname = "SONATA";});
+  vehicle_select_menu->addAction("SONATA_HEV", [=]() {carname_label.setText("SONATA_HEV"); carname = "SONATA_HEV";});
+  vehicle_select_menu->addAction("SONATA19", [=]() {carname_label.setText("SONATA19"); carname = "SONATA19";});
+  vehicle_select_menu->addAction("SONATA19_HEV", [=]() {carname_label.setText("SONATA19_HEV"); carname = "SONATA19_HEV";});
+  vehicle_select_menu->addAction("KONA", [=]() {carname_label.setText("KONA"); carname = "KONA";});
+  vehicle_select_menu->addAction("KONA_EV", [=]() {carname_label.setText("KONA_EV"); carname = "KONA_EV";});
+  vehicle_select_menu->addAction("KONA_HEV", [=]() {carname_label.setText("KONA_HEV"); carname = "KONA_HEV";});
+  vehicle_select_menu->addAction("IONIQ_EV", [=]() {carname_label.setText("IONIQ_EV"); carname = "IONIQ_EV";});
+  vehicle_select_menu->addAction("IONIQ_HEV", [=]() {carname_label.setText("IONIQ_HEV"); carname = "IONIQ_HEV";});
+  vehicle_select_menu->addAction("SANTA_FE", [=]() {carname_label.setText("SANTA_FE"); carname = "SANTA_FE";});
+  vehicle_select_menu->addAction("PALISADE", [=]() {carname_label.setText("PALISADE"); carname = "PALISADE";});
+  vehicle_select_menu->addAction("VELOSTER", [=]() {carname_label.setText("VELOSTER"); carname = "VELOSTER";});
+  vehicle_select_menu->addAction("GRANDEUR", [=]() {carname_label.setText("GRANDEUR"); carname = "GRANDEUR";});
+  vehicle_select_menu->addAction("GRANDEUR_HEV", [=]() {carname_label.setText("GRANDEUR_HEV"); carname = "GRANDEUR_HEV";});
+  vehicle_select_menu->addAction("NEXO", [=]() {carname_label.setText("NEXO"); carname = "NEXO";});
+  vehicle_select_menu->addAction("K3", [=]() {carname_label.setText("K3"); carname = "K3";});
+  vehicle_select_menu->addAction("K5", [=]() {carname_label.setText("K5"); carname = "K5";});
+  vehicle_select_menu->addAction("K5_HEV", [=]() {carname_label.setText("K5_HEV"); carname = "K5_HEV";});
+  vehicle_select_menu->addAction("K7", [=]() {carname_label.setText("K7"); carname = "K7";});
+  vehicle_select_menu->addAction("K7_HEV", [=]() {carname_label.setText("K7_HEV"); carname = "K7_HEV";});
+  vehicle_select_menu->addAction("SPORTAGE", [=]() {carname_label.setText("SPORTAGE"); carname = "SPORTAGE";});
+  vehicle_select_menu->addAction("SORENTO", [=]() {carname_label.setText("SORENTO"); carname = "SORENTO";});
+  vehicle_select_menu->addAction("STINGER", [=]() {carname_label.setText("STINGER"); carname = "STINGER";});
+  vehicle_select_menu->addAction("NIRO_EV", [=]() {carname_label.setText("NIRO_EV"); carname = "NIRO_EV";});
+  vehicle_select_menu->addAction("NIRO_HEV", [=]() {carname_label.setText("NIRO_HEV"); carname = "NIRO_HEV";});
+  vehicle_select_menu->addAction("CEED", [=]() {carname_label.setText("CEED"); carname = "CEED";});
+  vehicle_select_menu->addAction("SELTOS", [=]() {carname_label.setText("SELTOS"); carname = "SELTOS";});
 
   QPushButton *set_vehicle_btn = new QPushButton("차량선택");
   set_vehicle_btn->setMenu(vehicle_select_menu);
@@ -210,7 +210,7 @@ CarRecognition::CarRecognition() : AbstractControl("차량강제인식", "핑거
 
   QObject::connect(&btn, &QPushButton::released, [=]() {
     if (btn.text() == "설정") {
-      Params().put("CarModel", carname_label.toStdString());
+      Params().put("CarModel", carname.toStdString());
       QProcess::execute("/data/openpilot/car_force_set.sh");
     } else {
       Params().put("CarModel", "");
