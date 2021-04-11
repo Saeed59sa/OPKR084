@@ -462,7 +462,7 @@ QWidget * user_panel(QWidget * parent) {
   vehicle_select_menu->addAction("K7", [=]() {});
   vehicle_select_menu->addAction("K8", [=]() {});
   vehicle_select_menu->addAction("K9", [=]() {});
-  vehicle_select_menu->addAction("AVANTE", [=]() {})
+  vehicle_select_menu->addAction("AVANTE", [=]() {});
   vehicle_select_menu->addAction("SONATA", [=]() {});
   vehicle_select_menu->addAction("PALISADE", [=]() {});
   vehicle_select_menu->addAction("SELTOS", [=]() {});
