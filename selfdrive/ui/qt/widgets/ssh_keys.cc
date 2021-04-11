@@ -154,10 +154,10 @@ CarRecognition::CarRecognition() : AbstractControl("차량강제인식", "핑거
   // setup widget
   hlayout->addStretch(1);
   
+  QString carname_label = "";
   carname_label.setAlignment(Qt::AlignVCenter);
   carname_label.setStyleSheet("color: #aaaaaa");
   hlayout->addWidget(&carname_label);
-
   QMenu *vehicle_select_menu = new QMenu();
   vehicle_select_menu->addAction("GENESIS", [=]() {carname_label.setText("GENESIS");});
   vehicle_select_menu->addAction("GENESIS_G70", [=]() {carname_label.setText("GENESIS_G70");});
@@ -210,7 +210,7 @@ CarRecognition::CarRecognition() : AbstractControl("차량강제인식", "핑거
 
   QObject::connect(&btn, &QPushButton::released, [=]() {
     if (btn.text() == "설정") {
-      Params().put("CarModel", toStdString(carname_label));
+      Params().put("CarModel", carname_label.toStdString());
       QProcess::execute("/data/openpilot/car_force_set.sh");
     } else {
       Params().put("CarModel", "");
@@ -222,8 +222,8 @@ CarRecognition::CarRecognition() : AbstractControl("차량강제인식", "핑거
 }
 
 void CarRecognition::refresh() {
-  QString paramc = QString::fromStdString(Params().get("CarModel"));
-  if (paramc.length()) {
+  QString param = QString::fromStdString(Params().get("CarModel"));
+  if (param.length()) {
     carname_label.setText(QString::fromStdString(Params().get("CarModel")));
     btn.setText("제거");
   } else {
