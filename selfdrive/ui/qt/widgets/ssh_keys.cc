@@ -223,7 +223,7 @@ CarRecognition::CarRecognition() : AbstractControl("차량강제인식", "핑거
 }
 
 void CarRecognition::refresh(QString carname) {
-  //QString param = QString::fromStdString(Params().get("CarModel"));
+  carname_label.setText(QString::fromStdString(Params().get("CarModel")));
   if (carname.length()) {
     carname_label.setText(carname);
     btn.setText("제거");
