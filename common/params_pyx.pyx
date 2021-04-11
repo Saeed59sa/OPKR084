@@ -148,6 +148,7 @@ keys = {
   b"OpkrDrivingRecord": [TxType.PERSISTENT],
   b"OpkrTurnSteeringDisable": [TxType.PERSISTENT],
   b"CarModel": [TxType.PERSISTENT],
+  b"CarModelAbb": [TxType.PERSISTENT],
   b"OpkrHotspotOnBoot": [TxType.PERSISTENT],
   b"OpkrSSHLegacy": [TxType.PERSISTENT],
   b"ShaneFeedForward": [TxType.PERSISTENT],

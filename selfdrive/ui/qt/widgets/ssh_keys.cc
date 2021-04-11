@@ -210,12 +210,14 @@ CarRecognition::CarRecognition() : AbstractControl("차량강제인식", "핑거
   QObject::connect(&btn, &QPushButton::released, [=]() {
     if (btn.text() == "설정" && carname.length()) {
       Params().put("CarModel", carname.toStdString());
+      Params().put("CarModelAbb", carname.toStdString());
       QProcess::execute("/data/openpilot/car_force_set.sh");
       refresh(carname);
     } else {
       carname = "";
       //Params().put("CarModel", "");
       Params().remove("CarModel");
+      Params().remove("CarModelAbb");
       refresh(carname);
     }
   });
@@ -223,9 +225,12 @@ CarRecognition::CarRecognition() : AbstractControl("차량강제인식", "핑거
 }
 
 void CarRecognition::refresh(QString carname) {
-  carname_label.setText(QString::fromStdString(Params().get("CarModel")));
+  QString param = QString::fromStdString(Params().get("CarModelAbb"));
   if (carname.length()) {
     carname_label.setText(carname);
+    btn.setText("제거");
+  } else if (param.length()) {
+    carname_label.setText(QString::fromStdString(Params().get("CarModelAbb")));
     btn.setText("제거");
   } else {
     carname_label.setText("");
