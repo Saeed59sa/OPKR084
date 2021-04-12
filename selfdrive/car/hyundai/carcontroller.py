@@ -226,7 +226,7 @@ class CarController():
     
     #self.model_speed = interp(abs(lateral_plan.vCurvature), [0.0002, 0.01], [255, 30])
     #Hoya
-    self.model_speed = interp(abs(lateral_plan.vCurvature), [0.0, 0.0002, 0.00074, 0.0025, 0.008, 0.02], [255, 255, 130, 90, 60, 20])
+    self.model_speed = interp(abs(lateral_plan.vCurvature), [0.0, 0.0002, 0.001, 0.003, 0.01, 0.02, 0.03, 0.04], [255, 160, 125, 90, 50, 20, 5, 0])
 
     if CS.out.vEgo > 8:
       if self.variable_steer_max:

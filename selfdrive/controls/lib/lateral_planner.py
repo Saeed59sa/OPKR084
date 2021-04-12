@@ -20,8 +20,8 @@ LOG_MPC = os.environ.get('LOG_MPC', False)
 LANE_CHANGE_SPEED_MIN = float(int(Params().get("OpkrLaneChangeSpeed", encoding='utf8')) * CV.KPH_TO_MS)
 LANE_CHANGE_TIME_MAX = 10.
 # this corresponds to 80deg/s and 20deg/s steering angle in a toyota corolla
-MAX_CURVATURE_RATES = [0.04, 0.01, 0.02, 0.0025,  0.001, 0.0002] #[0.03762194918267951, 0.003441203371932992]
-MAX_CURVATURE_RATE_SPEEDS = [0, 15, 20, 25, 35, 45] #[0, 35]
+MAX_CURVATURE_RATES = [0.04, 0.03, 0.02, 0.01, 0.003, 0.001, 0.0002, 0.0] #[0.03762194918267951, 0.003441203371932992]
+MAX_CURVATURE_RATE_SPEEDS = [0, 1.39, 5.6, 13.9, 25, 34.7, 44.4, 70.8] #[0, 35]
 
 DESIRES = {
   LaneChangeDirection.none: {
