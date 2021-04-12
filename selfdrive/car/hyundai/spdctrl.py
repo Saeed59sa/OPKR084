@@ -33,7 +33,7 @@ class Spdctrl(SpdController):
         self.target_speed_map_counter2 = 0
         self.hesitant_status = False
         self.hesitant_timer = 0
-        self.map_decel_only = Params().get('OpkrMapDecelOnly') == b'1'
+        self.map_decel_only = Params().get_bool("OpkrMapDecelOnly")
         self.map_spdlimit_offset = int(Params().get("OpkrSpeedLimitOffset", encoding='utf8'))
 
     def update_lead(self, sm, CS, dRel, yRel, vRel):

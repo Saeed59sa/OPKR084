@@ -42,8 +42,8 @@ class CarState(CarStateBase):
 
     self.apply_steer = 0.
     
-    self.steer_anglecorrection = float(int(Params().get("OpkrSteerAngleCorrection", encoding='utf8')) * 0.1)
-    self.gear_correction = Params().get("JustDoGearD", encoding='utf8') == "1"
+    self.steer_anglecorrection = float(int(Params().get("OpkrSteerAngleCorrection")) * 0.1)
+    self.gear_correction = Params().get_bool("JustDoGearD")
 
   def update(self, cp, cp2, cp_cam):
     cp_mdps = cp2 if self.mdps_bus else cp

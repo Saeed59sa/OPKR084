@@ -131,7 +131,7 @@ def handle_fan_uno(max_cpu_temp, bat_temp, fan_speed, ignition):
   return new_speed
 
 def check_car_battery_voltage(should_start, pandaState, charging_disabled, msg):
-  battery_charging_control = Params().get('OpkrBatteryChargingControl') == b'1'
+  battery_charging_control = Params().get_bool('OpkrBatteryChargingControl')
   battery_charging_min = int(Params().get('OpkrBatteryChargingMin'))
   battery_charging_max = int(Params().get('OpkrBatteryChargingMax'))
 

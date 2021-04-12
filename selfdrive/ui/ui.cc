@@ -169,7 +169,7 @@ static void update_sockets(UIState *s) {
       scene.output_scale = scene.controls_state.getLateralControlState().getPidState().getOutput();
     } else if (scene.lateralControlMethod == 1) {
       scene.output_scale = scene.controls_state.getLateralControlState().getIndiState().getOutput();
-    } else if (s->scene.lateralControlMethod == 2) {
+    } else if (scene.lateralControlMethod == 2) {
       scene.output_scale = scene.controls_state.getLateralControlState().getLqrState().getOutput();
     }
     scene.angleSteersDes = scene.controls_state.getSteeringAngleDesiredDeg();

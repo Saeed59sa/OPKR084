@@ -96,7 +96,7 @@ class Planner():
     self.target_speed_map_dist = 0
     self.target_speed_map_block = False
     self.target_speed_map_sign = False
-    self.tartget_speed_offset = int(self.params.get("OpkrSpeedLimitOffset", encoding="utf8"))
+    self.tartget_speed_offset = int(self.params.get("OpkrSpeedLimitOffset"))
     self.vego = 0
 
   def choose_solution(self, v_cruise_setpoint, enabled):
@@ -158,8 +158,8 @@ class Planner():
       self.target_speed_map_counter1 = 0
       self.target_speed_map_counter = 0
       self.target_speed_map_counter_check = False
-      mapspeed = self.params.get("LimitSetSpeedCamera", encoding="utf8")
-      mapspeeddist = self.params.get("LimitSetSpeedCameraDist", encoding="utf8")
+      mapspeed = self.params.get("LimitSetSpeedCamera")
+      mapspeeddist = self.params.get("LimitSetSpeedCameraDist")
       if mapspeed is not None and mapspeeddist is not None:
         mapspeed = int(float(mapspeed.rstrip('\n')))
         mapspeeddist = int(float(mapspeeddist.rstrip('\n')))

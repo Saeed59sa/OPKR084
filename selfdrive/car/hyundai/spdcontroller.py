@@ -105,8 +105,8 @@ class SpdController():
         self.curvature_gain = 1
 
         self.params = Params()
-        self.cruise_set_mode = int(self.params.get("CruiseStatemodeSelInit", encoding='utf8'))
-        self.map_spd_limit_offset = int(self.params.get("OpkrSpeedLimitOffset", encoding='utf8'))
+        self.cruise_set_mode = int(self.params.get("CruiseStatemodeSelInit"))
+        self.map_spd_limit_offset = int(self.params.get('OpkrSpeedLimitOffset'))
 
         self.map_spd_enable = False
         self.map_spd_camera = 0
@@ -338,7 +338,7 @@ class SpdController():
         delta = int(round(set_speed)) - int(CS.VSetDis)
         dec_step_cmd = 1
 
-        camspeed = Params().get("LimitSetSpeedCamera", encoding="utf8")
+        camspeed = Params().get("LimitSetSpeedCamera")
         if camspeed is not None:
             self.map_spd_camera = int(float(camspeed.rstrip('\n')))
             self.map_spd_enable = self.map_spd_camera > 29

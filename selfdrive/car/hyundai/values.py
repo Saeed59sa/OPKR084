@@ -8,9 +8,9 @@ Ecu = car.CarParams.Ecu
 # Steer torque limits
 class CarControllerParams:
   params = Params()
-  STEER_MAX = int(params.get("SteerMaxAdj", encoding='utf8'))   # 409 is the max, 255 is stock
-  STEER_DELTA_UP = int(params.get("SteerDeltaUpAdj", encoding='utf8'))
-  STEER_DELTA_DOWN = int(params.get("SteerDeltaDownAdj", encoding='utf8'))
+  STEER_MAX = int(params.get("SteerMaxAdj"))   # 409 is the max, 255 is stock
+  STEER_DELTA_UP = int(params.get("SteerDeltaUpAdj"))
+  STEER_DELTA_DOWN = int(params.get("SteerDeltaDownAdj"))
   STEER_DRIVER_ALLOWANCE = 50
   STEER_DRIVER_MULTIPLIER = 2
   STEER_DRIVER_FACTOR = 1
@@ -60,11 +60,7 @@ class Buttons:
   GAP_DIST = 3
   CANCEL = 4
 
-params = Params()
-fingerprint_issued_fix = params.get('FingerprintIssuedFix') == b'1'
-fingerprint_two = params.get('FingerprintTwoSet') == b'1'
-
-if fingerprint_issued_fix:
+if Params().get_bool("FingerprintIssuedFix"):
   FINGERPRINTS = {
     # genesis
     CAR.GENESIS: [{}],
@@ -369,7 +365,7 @@ else:
 # Don't use these fingerprints for fingerprinting, they are still used for ECU detection
 IGNORED_FINGERPRINTS = [CAR.VELOSTER, CAR.GENESIS_G70, CAR.KONA, CAR.CEED, CAR.SELTOS]
 
-if fingerprint_two:
+if Params().get_bool("FingerprintTwoSet"):
   FW_VERSIONS = {
     # genesis
     CAR.GENESIS_G70: {
@@ -647,4 +643,4 @@ DBC = {
   CAR.SELTOS: dbc_dict('hyundai_kia_generic', None),
 }
 
-STEER_THRESHOLD = int(params.get("SteerThreshold", encoding='utf8'))
+STEER_THRESHOLD = int(Params().get("SteerThreshold"))

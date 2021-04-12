@@ -166,7 +166,7 @@ class Controls:
     
     self.mpc_frame = 0
 
-    self.steerRatio_Max = float(int(Params().get("SteerRatioMaxAdj", encoding='utf8')) * 0.1)
+    self.steerRatio_Max = float(int(Params().get("SteerRatioMaxAdj")) * 0.1)
     self.angle_differ_range = [0, 15]
     self.steerRatio_range = [self.CP.steerRatio, self.steerRatio_Max]
     self.new_steerRatio = self.CP.steerRatio
@@ -333,11 +333,11 @@ class Controls:
       if int(CS.vSetDis)-1 > self.v_cruise_kph:
         self.v_cruise_kph = int(CS.vSetDis)
     elif self.CP.enableCruise and CS.cruiseState.enabled:
-      if CS.cruiseButtons == Buttons.RES_ACCEL and Params().get('OpkrVariableCruise') == b'1' and CS.cruiseState.modeSel != 0 and CS.vSetDis < (self.v_cruise_kph_last - 1):
+      if CS.cruiseButtons == Buttons.RES_ACCEL and Params().get_bool('OpkrVariableCruise') and CS.cruiseState.modeSel != 0 and CS.vSetDis < (self.v_cruise_kph_last - 1):
         self.v_cruise_kph = self.v_cruise_kph_last
         if int(CS.vSetDis)-1 > self.v_cruise_kph:
           self.v_cruise_kph = int(CS.vSetDis)
-      elif CS.cruiseButtons == Buttons.RES_ACCEL and Params().get('OpkrVariableCruise') == b'1' and CS.cruiseState.modeSel != 0 and 30 <= self.v_cruise_kph_last <= round(CS.vEgo*CV.MS_TO_KPH):
+      elif CS.cruiseButtons == Buttons.RES_ACCEL and Params().get_bool('OpkrVariableCruise') and CS.cruiseState.modeSel != 0 and 30 <= self.v_cruise_kph_last <= round(CS.vEgo*CV.MS_TO_KPH):
         self.v_cruise_kph = round(CS.vEgo*CV.MS_TO_KPH)
         if int(CS.vSetDis)-1 > self.v_cruise_kph:
           self.v_cruise_kph = int(CS.vSetDis)
@@ -345,7 +345,7 @@ class Controls:
       elif CS.cruiseButtons == Buttons.RES_ACCEL or CS.cruiseButtons == Buttons.SET_DECEL:
         self.v_cruise_kph = round(CS.cruiseState.speed * CV.MS_TO_KPH)
         self.v_cruise_kph_last = self.v_cruise_kph
-      elif CS.driverAcc and Params().get('OpkrVariableCruise') == b'1' and Params().get('CruiseOverMaxSpeed') == b'1' and 30 <= self.v_cruise_kph < int(round(CS.vEgo*CV.MS_TO_KPH)):
+      elif CS.driverAcc and Params().get_bool('OpkrVariableCruise') and Params().get_bool('CruiseOverMaxSpeed') and 30 <= self.v_cruise_kph < int(round(CS.vEgo*CV.MS_TO_KPH)):
         self.v_cruise_kph = int(round(CS.vEgo*CV.MS_TO_KPH))
         self.v_cruise_kph_last = self.v_cruise_kph
 
@@ -426,7 +426,7 @@ class Controls:
     anglesteer_desire = lat_plan.steerAngleDesireDeg   
     output_scale = lat_plan.outputScale
 
-    live_sr = Params().get('OpkrLiveSteerRatio') == b'1'
+    live_sr = Params().get_bool('OpkrLiveSteerRatio')
 
     if not live_sr:
       angle_diff = abs(anglesteer_desire) - abs(anglesteer_current)
