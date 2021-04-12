@@ -17,7 +17,7 @@ LaneChangeDirection = log.LateralPlan.LaneChangeDirection
 
 LOG_MPC = os.environ.get('LOG_MPC', False)
 
-LANE_CHANGE_SPEED_MIN = float(int(Params().get("OpkrLaneChangeSpeed", encoding='utf8')) * CV.KPH_TO_MS)
+LANE_CHANGE_SPEED_MIN = float(int(Params().get("OpkrLaneChangeSpeed")) * CV.KPH_TO_MS)
 LANE_CHANGE_TIME_MAX = 10.
 # this corresponds to 80deg/s and 20deg/s steering angle in a toyota corolla
 MAX_CURVATURE_RATES = [0.04, 0.03, 0.02, 0.01, 0.003, 0.001, 0.0002, 0.0] #[0.03762194918267951, 0.003441203371932992]
@@ -63,17 +63,17 @@ class LateralPlanner():
     self.laneless_mode_at_stopping = False
     self.laneless_mode_at_stopping_timer = 0
 
-    if int(Params().get("OpkrAutoLaneChangeDelay", encoding='utf8')) == 0:
+    if int(Params().get("OpkrAutoLaneChangeDelay")) == 0:
       self.lane_change_auto_delay = 0.0
-    elif int(Params().get("OpkrAutoLaneChangeDelay", encoding='utf8')) == 1:
+    elif int(Params().get("OpkrAutoLaneChangeDelay")) == 1:
       self.lane_change_auto_delay = 0.2
-    elif int(Params().get("OpkrAutoLaneChangeDelay", encoding='utf8')) == 2:
+    elif int(Params().get("OpkrAutoLaneChangeDelay")) == 2:
       self.lane_change_auto_delay = 0.5
-    elif int(Params().get("OpkrAutoLaneChangeDelay", encoding='utf8')) == 3:
+    elif int(Params().get("OpkrAutoLaneChangeDelay")) == 3:
       self.lane_change_auto_delay = 1.0
-    elif int(Params().get("OpkrAutoLaneChangeDelay", encoding='utf8')) == 4:
+    elif int(Params().get("OpkrAutoLaneChangeDelay")) == 4:
       self.lane_change_auto_delay = 1.5
-    elif int(Params().get("OpkrAutoLaneChangeDelay", encoding='utf8')) == 5:
+    elif int(Params().get("OpkrAutoLaneChangeDelay")) == 5:
       self.lane_change_auto_delay = 2.0
 
     self.lane_change_wait_timer = 0.0
