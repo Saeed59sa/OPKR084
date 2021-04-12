@@ -20,7 +20,7 @@ LOG_MPC = os.environ.get('LOG_MPC', False)
 LANE_CHANGE_SPEED_MIN = float(int(Params().get("OpkrLaneChangeSpeed", encoding='utf8')) * CV.KPH_TO_MS)
 LANE_CHANGE_TIME_MAX = 10.
 # this corresponds to 80deg/s and 20deg/s steering angle in a toyota corolla
-MAX_CURVATURE_RATES = [0.03762194918267951, 0.003441203371932992]
+MAX_CURVATURE_RATES = [0.02, 0.0007] #[0.03762194918267951, 0.003441203371932992]
 MAX_CURVATURE_RATE_SPEEDS = [0, 35]
 
 DESIRES = {
@@ -90,7 +90,7 @@ class LateralPlanner():
     self.t_idxs = np.arange(TRAJECTORY_SIZE)
     self.y_pts = np.zeros(TRAJECTORY_SIZE)
 
-    self.lane_change_adjust = [0.12, 0.19, 0.9, 1.4]
+    self.lane_change_adjust = [0.10, 0.15, 0.8, 1.5] #[0.12, 0.19, 0.9, 1.4]
     self.lane_change_adjust_vel = [8.3, 16, 22, 30]
     self.lane_change_adjust_new = 0.0
 
