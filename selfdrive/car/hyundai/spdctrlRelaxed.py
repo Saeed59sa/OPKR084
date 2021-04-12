@@ -235,7 +235,7 @@ class SpdctrlRelaxed(SpdController):
 
         # 2. 커브 감속.
         #if self.cruise_set_speed_kph >= 100:
-        if CS.out.cruiseState.modeSel == 1 and Events().names not in [EventName.laneChangeManual, EventName.laneChange] and not (self.left_blinker_flash or self.right_blinker_flash)and not self.map_decel_only:
+        if CS.out.cruiseState.modeSel == 1 and Events().names not in [EventName.laneChangeManual, EventName.laneChange] and not (CS.left_blinker_flash or CS.right_blinker_flash)and not self.map_decel_only:
             if model_speed < 25 and int(CS.clu_Vanz) >= 40 and CS.lead_distance >= 15:
                 set_speed = min(40, self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.3))
                 self.seq_step_debug = "커브감속-5"
