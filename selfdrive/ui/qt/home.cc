@@ -60,7 +60,7 @@ void HomeWindow::mousePressEvent(QMouseEvent* e) {
 
   glWindow->wake();
 
-  // Settings button double click
+  // OPKR Settings button double click
   if (!ui_state->sidebar_collapsed && settings_btn.ptInRect(e->x(), e->y())) {
     ui_state->setbtn_count = ui_state->setbtn_count + 1;
     if (ui_state->setbtn_count > 1) {
@@ -69,8 +69,8 @@ void HomeWindow::mousePressEvent(QMouseEvent* e) {
     return;
   }
 
-  // home button double click
-  if (!ui_state->sidebar_collapsed && ui_state->status == STATUS_OFFROAD && home_btn.ptInRect(e->x(), e->y())) {
+  // OPKR home button double click
+  if (!ui_state->sidebar_collapsed && ui_state->scene.car_state.getVEgo() < 0.5 && home_btn.ptInRect(e->x(), e->y())) {
     ui_state->homebtn_count = ui_state->homebtn_count + 1;
     if (ui_state->homebtn_count > 1) {
       QProcess::execute("/data/openpilot/run_mixplorer.sh");
