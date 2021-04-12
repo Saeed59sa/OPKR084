@@ -1050,3 +1050,31 @@ private:
 
   void refresh();
 };
+
+class RecordCount : public AbstractControl {
+  Q_OBJECT
+
+public:
+  RecordCount();
+
+private:
+  QPushButton btnplus;
+  QPushButton btnminus;
+  QLabel label;
+
+  void refresh();
+};
+
+class RecordQuality : public AbstractControl {
+  Q_OBJECT
+
+public:
+  RecordQuality();
+
+private:
+  QPushButton btnplus;
+  QPushButton btnminus;
+  QLabel label;
+
+  void refresh();
+};

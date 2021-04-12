@@ -102,7 +102,7 @@ void stop_capture() {
   }
 }
 
-void start_capture() {
+void start_capture(UIState *s) {
   captureState = CAPTURE_STATE_CAPTURING;
   char cmd[128] = "";
   char purge[128] = "";
@@ -130,15 +130,22 @@ void start_capture() {
   char filename[64];
   struct tm tm = get_time_struct();
   snprintf(filename,sizeof(filename),"%04d%02d%02d-%02d%02d%02d.mp4", tm.tm_year + 1900, tm.tm_mon + 1, tm.tm_mday, tm.tm_hour, tm.tm_min, tm.tm_sec);
-  //snprintf(cmd,sizeof(cmd),"screenrecord --size 1280x720 --bit-rate 5000000 %s/%s&",videos_dir,filename);
-  snprintf(cmd,sizeof(cmd),"screenrecord --size 960x540 --bit-rate 3000000 %s/%s&",videos_dir,filename);
+  if (s->scene.recording_quality == 0) {
+    snprintf(cmd,sizeof(cmd),"screenrecord --size 800x450 --bit-rate 2000000 %s/%s&",videos_dir,filename);
+  } else if (s->scene.recording_quality == 1) {
+    snprintf(cmd,sizeof(cmd),"screenrecord --size 960x540 --bit-rate 3000000 %s/%s&",videos_dir,filename);
+  } else if (s->scene.recording_quality == 2) {
+    snprintf(cmd,sizeof(cmd),"screenrecord --size 1280x720 --bit-rate 4000000 %s/%s&",videos_dir,filename);
+  } else {
+    snprintf(cmd,sizeof(cmd),"screenrecord --size 1920x1080 --bit-rate 5000000 %s/%s&",videos_dir,filename);
+  }
   strcpy(filenames[captureNum],filename);
 
   printf("Capturing to file: %s\n",cmd);
   start_time = get_time();
 
-  // Auto purge if files are greater than RECORD_FILES. It will remove older files.
-  snprintf(purge,sizeof(purge),"ls -td1 %s/*.mp4 | tail -n +%d | xargs rm -f&", videos_dir, RECORD_FILES);
+  // Auto purge if files are greater than recording_count. It will remove older files.
+  snprintf(purge,sizeof(purge),"ls -td1 %s/*.mp4 | tail -n +%d | xargs rm -f&", videos_dir, s->scene.recording_count);
   system(purge);
   system(cmd);
 
@@ -192,12 +199,12 @@ void draw_date_time(UIState *s) {
     nvgText(s->vg,rect_x+229,rect_y+57,now,NULL);
 }
 
-static void rotate_video() {
+static void rotate_video(UIState *s) {
   // Overwrite the existing video (if needed)
   elapsed_time = 0;
   stop_capture();
   captureState = CAPTURE_STATE_CAPTURING;
-  start_capture();
+  start_capture(s);
 }
 
 static void screen_draw_button(UIState *s) {
@@ -237,19 +244,19 @@ static void screen_draw_button(UIState *s) {
     elapsed_time = get_time() - start_time;
 
     if (elapsed_time >= RECORD_INTERVAL) {
-      rotate_video();
+      rotate_video(s);
     }
   }
 }
 
-void screen_toggle_record_state() {
+void screen_toggle_record_state(UIState *s) {
   if (captureState == CAPTURE_STATE_CAPTURING) {
     stop_capture();
     lock_current_video = false;
   }
   else {
     //captureState = CAPTURE_STATE_CAPTURING;
-    start_capture();
+    start_capture(s);
   }
 }
 
@@ -270,7 +277,7 @@ void dashcam(UIState *s) {
 
     if (click_elapsed_time > 0) {
       click_time = get_time() + 1;
-      screen_toggle_record_state();
+      screen_toggle_record_state(s);
       s->scene.touched = !s->scene.touched;
     }
   }
@@ -282,8 +289,8 @@ void dashcam(UIState *s) {
 
   if (s->driving_record) {
     if (s->scene.car_state.getVEgo() >= 1.5 && captureState == CAPTURE_STATE_NOT_CAPTURING && s->scene.controls_state.getEnabled()) {
-      start_capture();
-    } else if (s->scene.car_state.getVEgo() < 1 && captureState == CAPTURE_STATE_CAPTURING && s->scene.controls_state.getEnabled()) {
+      start_capture(s);
+    } else if (s->scene.car_state.getVEgo() < 0.5 && captureState == CAPTURE_STATE_CAPTURING && s->scene.controls_state.getEnabled()) {
       stop_capture();
     }
   }

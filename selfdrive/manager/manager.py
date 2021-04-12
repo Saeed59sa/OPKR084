@@ -111,6 +111,8 @@ def manager_init():
     ("MaxRateUp", "3"),
     ("MaxRateDown", "7"),
     ("SteerThreshold", "150"),
+    ("RecordingCount", "100"),
+    ("RecordingQuality", "1"),
   ]
 
   if params.get_bool("RecordFrontLock"):

@@ -311,6 +311,8 @@ void GLWindow::initializeGL() {
   timer->start(1000 / UI_FREQ);
   backlight_timer->start(BACKLIGHT_DT * 1000);
   ui_state.scene.laneless_mode = std::stoi(Params().get("LanelessMode"));
+  ui_state.scene.recording_count = std::stoi(Params().get("RecordingCount"));
+  ui_state.scene.recording_quality = std::stoi(Params().get("RecordingQuality"));
 }
 
 void GLWindow::backlightUpdate() {
