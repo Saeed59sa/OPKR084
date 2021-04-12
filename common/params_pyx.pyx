@@ -162,6 +162,8 @@ keys = {
   b"MaxRateUp": [TxType.PERSISTENT],
   b"MaxRateDown": [TxType.PERSISTENT],
   b"SteerThreshold": [TxType.PERSISTENT],
+  b"RecordingCount": [TxType.PERSISTENT],
+  b"RecordingQuality": [TxType.PERSISTENT],
 }
 
 def ensure_bytes(v):

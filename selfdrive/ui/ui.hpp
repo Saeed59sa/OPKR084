@@ -163,6 +163,8 @@ typedef struct UIScene {
   float vSetDis;
   bool cruiseAccStatus;
   int laneless_mode;
+  int recording_count;
+  int recording_quality;
 
   NetStatus athenaStatus;
 

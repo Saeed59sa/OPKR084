@@ -636,6 +636,137 @@ void ChargingMax::refresh() {
   btnplus.setText("＋");
 }
 
+RecordCount::RecordCount() : AbstractControl("녹화파일 최대 개수 설정", "녹화 파일 최대 개수를 설정합니다.", "../assets/offroad/icon_shell.png") {
+
+  label.setAlignment(Qt::AlignVCenter|Qt::AlignRight);
+  label.setStyleSheet("color: #e0e879");
+  hlayout->addWidget(&label);
+
+  btnminus.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+  btnplus.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+  btnminus.setFixedSize(150, 100);
+  btnplus.setFixedSize(150, 100);
+  hlayout->addWidget(&btnminus);
+  hlayout->addWidget(&btnplus);
+
+  QObject::connect(&btnminus, &QPushButton::released, [=]() {
+    auto str = QString::fromStdString(Params().get("RecordingCount"));
+    int value = str.toInt();
+    value = value - 5;
+    if (value <= 5 ) {
+      value = 5;
+    } else {
+    }
+    QString values = QString::number(value);
+    Params().put("RecordingCount", values.toStdString());
+    refresh();
+  });
+  
+  QObject::connect(&btnplus, &QPushButton::released, [=]() {
+    auto str = QString::fromStdString(Params().get("RecordingCount"));
+    int value = str.toInt();
+    value = value + 5;
+    if (value >= 300 ) {
+      value = 300;
+    } else {
+    }
+    QString values = QString::number(value);
+    Params().put("RecordingCount", values.toStdString());
+    refresh();
+  });
+  refresh();
+}
+
+void RecordCount::refresh() {
+  label.setText(QString::fromStdString(Params().get("RecordingCount")));
+  btnminus.setText("－");
+  btnplus.setText("＋");
+}
+
+RecordQuality::RecordQuality() : AbstractControl("녹화 화질 설정", "녹화 화질을 설정합니다. 저화질/중화질/고화질/초고화질", "../assets/offroad/icon_shell.png") {
+
+  label.setAlignment(Qt::AlignVCenter|Qt::AlignRight);
+  label.setStyleSheet("color: #e0e879");
+  hlayout->addWidget(&label);
+
+  btnminus.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+  btnplus.setStyleSheet(R"(
+    padding: 0;
+    border-radius: 50px;
+    font-size: 35px;
+    font-weight: 500;
+    color: #E4E4E4;
+    background-color: #393939;
+  )");
+  btnminus.setFixedSize(150, 100);
+  btnplus.setFixedSize(150, 100);
+  hlayout->addWidget(&btnminus);
+  hlayout->addWidget(&btnplus);
+
+  QObject::connect(&btnminus, &QPushButton::released, [=]() {
+    auto str = QString::fromStdString(Params().get("RecordingQuality"));
+    int value = str.toInt();
+    value = value - 1;
+    if (value <= 0 ) {
+      value = 0;
+    } else {
+    }
+    QString values = QString::number(value);
+    Params().put("RecordingQuality", values.toStdString());
+    refresh();
+  });
+  
+  QObject::connect(&btnplus, &QPushButton::released, [=]() {
+    auto str = QString::fromStdString(Params().get("RecordingQuality"));
+    int value = str.toInt();
+    value = value + 1;
+    if (value >= 3 ) {
+      value = 3;
+    } else {
+    }
+    QString values = QString::number(value);
+    Params().put("RecordingQuality", values.toStdString());
+    refresh();
+  });
+  refresh();
+}
+
+void RecordQuality::refresh() {
+  QString option = QString::fromStdString(Params().get("RecordingQuality"));
+  if (option == "0") {
+    label.setText(QString::fromStdString("저화질"));
+  } else if (option == "1") {
+    label.setText(QString::fromStdString("중화질"));
+  } else if (option == "2") {
+    label.setText(QString::fromStdString("고화질"));
+  } else {
+    label.setText(QString::fromStdString("초고화질"));
+  }
+  btnminus.setText("◀");
+  btnplus.setText("▶");
+}
+
 //주행
 VariableCruiseProfile::VariableCruiseProfile() : AbstractControl("크루즈 가감속 프로파일", "크루즈 가감속 프로파일을 설정합니다. follow/relaxed", "../assets/offroad/icon_shell.png") {
 

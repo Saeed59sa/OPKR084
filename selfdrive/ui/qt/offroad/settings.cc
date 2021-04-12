@@ -416,6 +416,15 @@ QWidget * user_panel(QWidget * parent) {
   layout->addWidget(new ChargingMax());
   layout->addWidget(new DrivingRecordToggle());
   layout->addWidget(new HotspotOnBootToggle());
+  layout->addWidget(new RecordCount());
+  layout->addWidget(new RecordQuality());
+  const char* record_del = "rm -f /storage/emulated/0/videos/*";
+  layout->addWidget(new ButtonControl("녹화파일 전부 삭제", "실행", "저장된 녹화파일을 모두 삭제합니다.",
+                                      [=]() { 
+                                        if (ConfirmationDialog::confirm("저장된 녹화파일을 모두 삭제합니다. 진행하시겠습니까?")){
+                                          std::system(record_del);
+                                        }
+                                      }));
 
   layout->addWidget(horizontal_line());
   layout->addWidget(new LabelControl("주행설정", ""));
