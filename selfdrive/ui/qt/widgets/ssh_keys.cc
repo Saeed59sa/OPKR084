@@ -2208,8 +2208,8 @@ SteerMaxv::SteerMaxv() : AbstractControl("SteerMaxV", "SteerMaxV값을 조정합
     auto str = QString::fromStdString(Params().get("SteerMaxvAdj"));
     int value = str.toInt();
     value = value - 1;
-    if (value <= 1 ) {
-      value = 1;
+    if (value <= 10 ) {
+      value = 10;
     } else {
     }
     QString values = QString::number(value);
