@@ -172,8 +172,8 @@ class CarController():
     self.steerDeltaUp = int(self.params.get("SteerDeltaUpBaseAdj"))
     self.steerDeltaDown = int(self.params.get("SteerDeltaDownBaseAdj"))
 
-    self.variable_steer_max = self.params.get('OpkrVariableSteerMax') == "1"
-    self.variable_steer_delta = self.params.get('OpkrVariableSteerDelta') == "1"
+    self.variable_steer_max = self.params.get_bool("OpkrVariableSteerMax")
+    self.variable_steer_delta = self.params.get_bool("OpkrVariableSteerDelta")
 
     if CP.lateralTuning.which() == 'pid':
       self.str_log2 = 'T={:0.2f}/{:0.3f}/{:0.2f}/{:0.5f}'.format(CP.lateralTuning.pid.kpV[1], CP.lateralTuning.pid.kiV[1], CP.lateralTuning.pid.kdV[0], CP.lateralTuning.pid.kf)

@@ -152,7 +152,8 @@ static void ui_draw_track(UIState *s, const line_vertices_data &vd)
       track_bg = nvgLinearGradient(s->vg, s->fb_w, s->fb_h, s->fb_w, s->fb_h*.4,
         COLOR_BLACK_ALPHA(80), COLOR_BLACK_ALPHA(20));
     } else {
-      int torque_scale = (int)fabs(255*(float)s->scene.output_scale*0.9);
+      float steer_max_v = s->scene.steerMax_V - (1.5 * (s->scene.steerMax_V - 0.9));
+      int torque_scale = (int)fabs(255*(float)s->scene.output_scale*steer_max_v);
       int red_lvl = fmin(255, torque_scale);
       int green_lvl = fmin(255, 255-torque_scale);
       track_bg = nvgLinearGradient(s->vg, s->fb_w, s->fb_h, s->fb_w, s->fb_h*.4,
