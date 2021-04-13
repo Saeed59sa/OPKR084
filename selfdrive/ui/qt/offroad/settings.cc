@@ -475,16 +475,16 @@ QWidget * user_panel(QWidget * parent) {
   layout->addWidget(new MaxRateUp());
   layout->addWidget(new MaxRateDown());
   const char* p_edit_go = "/data/openpilot/p_edit.sh ''";
-  layout->addWidget(new ButtonControl("판다 값 일괄 변경 적용", "실행", "변경된 판다값을 적용합니다. 콤마가 좋아하지 않으니 사용에 주의를 요합니다.",
+  layout->addWidget(new ButtonControl("판다 값 최적화", "실행", "판다 값을 적정값으로 최적화 합니다.",
                                       [=]() { 
-                                        if (ConfirmationDialog::confirm("변경된 판다값을 적용합니다. 콤마가 안좋아합니다. 적용후 자동 재부팅 됩니다.")){
+                                        if (ConfirmationDialog::confirm("판다 값을 최적화 합니다. 조지 싸장님 쌀랑해요~")){
                                           std::system(p_edit_go);
                                         }
                                       }));
   const char* m_edit_go = "/data/openpilot/m_edit.sh ''";
-  layout->addWidget(new ButtonControl("모니터링 파라미터 수정", "실행", "야간 감시 및 터널 안 원활한 모니터링을 위하여 파라미터를 수정합니다.",
+  layout->addWidget(new ButtonControl("모니터링 최적화", "실행", "야간 감시 및 터널 안 원활한 모니터링을 위하여 파라미터를 수정합니다.",
                                       [=]() { 
-                                        if (ConfirmationDialog::confirm("야간 감시 및 터널 안 원활한 모니터링을 위하여 파라미터를 수정합니다.")){
+                                        if (ConfirmationDialog::confirm("야간감시 및 터널 모니터링을 최적화 합니다. 싸장님 좋아요. 콤마 쌀랑해요~")){
                                           std::system(m_edit_go);
                                         }
                                       }));
