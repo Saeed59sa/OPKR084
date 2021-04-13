@@ -149,6 +149,7 @@ static void ui_draw_track(UIState *s, const line_vertices_data &vd) {
   int torque_scale = 0;
   int red_lvl = 0;
   int blue_lvl = 0;
+  float steer_max_v = s->scene.steerMax_V - (1.5 * (s->scene.steerMax_V - 0.9));  
 
   NVGpaint track_bg;
   if (s->scene.controls_state.getEnabled()) {
@@ -157,7 +158,7 @@ static void ui_draw_track(UIState *s, const line_vertices_data &vd) {
                                   COLOR_BLACK_ALPHA(100), COLOR_BLACK_ALPHA(10)); 
     } else if (!scene.lateralPlan.lanelessModeStatus) {
         if (fabs(s->scene.output_scale) > 0.90) {
-          torque_scale = (int)fabs(160*(float)s->scene.output_scale);
+          torque_scale = (int)fabs(255*(float)s->scene.output_scale*steer_max_v);
           red_lvl = fmin(230, (torque_scale - 144 ) * 16);
           blue_lvl = fmin(200, (160-torque_scale) * 16);
         } else {
@@ -166,16 +167,12 @@ static void ui_draw_track(UIState *s, const line_vertices_data &vd) {
         }
         track_bg = nvgLinearGradient(s->vg, s->fb_w, s->fb_h, s->fb_w, s->fb_h*.4,
                   nvgRGBA(red_lvl, 100, blue_lvl, 230), nvgRGBA(red_lvl, 100, blue_lvl, 10));  
-    } else {
-      track_bg = nvgLinearGradient(s->vg, s->fb_w, s->fb_h, s->fb_w, s->fb_h * .4,
-                                          COLOR_RED, COLOR_RED_ALPHA(0));
     }
   } else {
     // Draw white vision track
     track_bg = nvgLinearGradient(s->vg, s->fb_w, s->fb_h, s->fb_w, s->fb_h * .4,
                                         COLOR_WHITE_ALPHA(80), COLOR_WHITE_ALPHA(10));
   }
-
   nvgFillPaint(s->vg, track_bg);
   nvgFill(s->vg); 
 }

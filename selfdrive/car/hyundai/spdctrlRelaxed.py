@@ -138,7 +138,7 @@ class SpdctrlRelaxed(SpdController):
                 self.cut_in = False
             elif lead_objspd < 0 and int(CS.clu_Vanz)//abs(lead_objspd) <= int(CS.VSetDis)//abs(lead_objspd):
                 self.seq_step_debug = "기준내-가변"
-                lead_wait_cmd, lead_set_speed = self.get_tm_speed(CS, max(6, 120-(abs(lead_objspd**3))), -2)
+                lead_wait_cmd, lead_set_speed = self.get_tm_speed(CS, max(7, 120-(abs(lead_objspd**3))), -2)
                 self.cut_in = False
             elif lead_objspd >= 0 and int(CS.clu_Vanz) <= int(CS.VSetDis): 
                 self.seq_step_debug = "기준내,-1"
@@ -152,7 +152,7 @@ class SpdctrlRelaxed(SpdController):
             self.cut_in = False
             if int(CS.clu_Vanz//abs(lead_objspd)) <= int(CS.VSetDis//abs(lead_objspd)):
               self.seq_step_debug = "정차차량 감속"
-              lead_wait_cmd, lead_set_speed = self.get_tm_speed(CS, 6, -20)
+              lead_wait_cmd, lead_set_speed = self.get_tm_speed(CS, 7, -20)
         elif self.cruise_set_speed_kph > int(round((CS.clu_Vanz))) and not self.map_decel_only:  #이온설정속도가 차량속도보다 큰경우
             self.cut_in = False
             if 10 > dRel > 3 and lead_objspd <= 0 and 1 < int(CS.clu_Vanz) <= 7 and CS.VSetDis < 45 and ((int(round(self.target_speed)) > int(CS.VSetDis) and self.target_speed != 0) or self.target_speed == 0):
@@ -189,7 +189,7 @@ class SpdctrlRelaxed(SpdController):
                 lead_wait_cmd, lead_set_speed = self.get_tm_speed( CS, max(15, 50+(lead_objspd*2)), -1)
             elif 70 > CS.clu_Vanz > 30 and lead_objspd < 0 and int(CS.clu_Vanz)//abs(lead_objspd*2.2) <= int(CS.VSetDis)//abs(lead_objspd*2.2) and int(CS.clu_Vanz) >= dRel*0.8 and 1 < dRel < 149:
                 self.seq_step_debug = "SS>VS,70>v>30,-1"
-                lead_wait_cmd, lead_set_speed = self.get_tm_speed( CS, max(6, 120-(abs(lead_objspd**3))), -2)
+                lead_wait_cmd, lead_set_speed = self.get_tm_speed( CS, max(7, 120-(abs(lead_objspd**3))), -2)
             elif 7 < int(CS.clu_Vanz) < 30 and lead_objspd < 0 and CS.VSetDis > 30:
                 self.seq_step_debug = "SS>VS,30이하"
                 lead_wait_cmd, lead_set_speed = self.get_tm_speed( CS, 7, -5)
@@ -216,7 +216,7 @@ class SpdctrlRelaxed(SpdController):
             self.cut_in = False
             if int(CS.clu_Vanz//abs(lead_objspd)) <= int(CS.VSetDis//abs(lead_objspd)):
               self.seq_step_debug = "점진감속"
-              lead_wait_cmd, lead_set_speed = self.get_tm_speed(CS, max(6, 200-(abs(lead_objspd**3))), -1)
+              lead_wait_cmd, lead_set_speed = self.get_tm_speed(CS, max(7, 200-(abs(lead_objspd**3))), -1)
         elif lead_objspd >= 0 and CS.clu_Vanz >= int(CS.VSetDis) and int(CS.clu_Vanz * 0.5) < dRel < 149 and not self.map_decel_only:
             self.cut_in = False
             self.seq_step_debug = "속도유지"
@@ -239,23 +239,23 @@ class SpdctrlRelaxed(SpdController):
             if model_speed < 25 and int(CS.clu_Vanz) >= 40 and CS.lead_distance >= 15:
                 set_speed = min(40, self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.3))
                 self.seq_step_debug = "커브감속-5"
-                wait_time_cmd = 6
+                wait_time_cmd = 7
             elif model_speed < 40 and int(CS.clu_Vanz) >= 40 and CS.lead_distance >= 15:
                 set_speed = min(50, self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.25))
                 self.seq_step_debug = "커브감속-4"
-                wait_time_cmd = 6
+                wait_time_cmd = 7
             elif model_speed < 60 and int(CS.clu_Vanz) >= 40 and CS.lead_distance >= 15:
                 set_speed = min(60, self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.2))
                 self.seq_step_debug = "커브감속-3"
-                wait_time_cmd = 6
+                wait_time_cmd = 7
             elif model_speed < 75 and int(CS.clu_Vanz) >= 40 and CS.lead_distance >= 15:
                 set_speed = min(70, self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.15))
                 self.seq_step_debug = "커브감속-2"
-                wait_time_cmd = 6
+                wait_time_cmd = 7
             elif model_speed < 90 and int(CS.clu_Vanz) >= 40 and CS.lead_distance >= 15:
                 set_speed = min(80, self.cruise_set_speed_kph - int(CS.clu_Vanz * 0.1))
                 self.seq_step_debug = "커브감속-1"
-                wait_time_cmd = 6
+                wait_time_cmd = 7
 
         return wait_time_cmd, set_speed
 

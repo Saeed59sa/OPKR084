@@ -270,6 +270,7 @@ static void update_sockets(UIState *s) {
   }
   if (sm.updated("carParams")) {
     scene.longitudinal_control = sm["carParams"].getCarParams().getOpenpilotLongitudinalControl();
+    scene.steerMax_V = sm["carParams"].getCarParams().getSteerMaxV()[0];
   }
   if (sm.updated("driverState")) {
     scene.driver_state = sm["driverState"].getDriverState();
