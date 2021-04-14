@@ -828,6 +828,7 @@ struct LateralPlan @0xe1e9318e2ae8b51e {
   vCurvature @30 :Float32;
   steerAngleDesireDeg @31 :Float32;
   lanelessMode @32 :Bool;
+  steerActuatorDelay @33 :Float32;
 
   enum Desire {
     none @0;

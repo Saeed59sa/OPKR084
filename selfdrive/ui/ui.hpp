@@ -217,6 +217,7 @@ typedef struct UIScene {
 
     float angleOffset;
     bool lanelessModeStatus;
+    float steerActuatorDelay;
   } lateralPlan;
 } UIScene;
 
