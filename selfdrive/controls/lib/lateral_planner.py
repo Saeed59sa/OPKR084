@@ -20,8 +20,8 @@ LOG_MPC = os.environ.get('LOG_MPC', False)
 LANE_CHANGE_SPEED_MIN = float(int(Params().get("OpkrLaneChangeSpeed")) * CV.KPH_TO_MS)
 LANE_CHANGE_TIME_MAX = 10.
 # this corresponds to 80deg/s and 20deg/s steering angle in a toyota corolla
-MAX_CURVATURE_RATES = [0.05, 0.04, 0.03, 0.02, 0.004, 0.002, 0.0003, 0.0] #[0.03762194918267951, 0.003441203371932992]
-MAX_CURVATURE_RATE_SPEEDS = [0, 4.17, 9.72, 18.06, 26.39, 33.33, 44.44, 70.83] #[0, 35]
+MAX_CURVATURE_RATES = [0.03, 0.025, 0.015, 0.0035, 0.0015, 0.00025, 0.0] #[0.03762194918267951, 0.003441203371932992]
+MAX_CURVATURE_RATE_SPEEDS = [4.17, 9.72, 18.06, 26.39, 33.33, 44.44, 70.83] #[0, 35]
 
 DESIRES = {
   LaneChangeDirection.none: {
@@ -293,7 +293,7 @@ class LateralPlanner():
 
     # TODO this needs more thought, use .2s extra for now to estimate other delays
     #delay = CP.steerActuatorDelay # + .2
-    delay = interp(v_ego, [0.0, 5.0, 10.0, 20.0, 30.0], [CP.steerActuatorDelay - 0.10, CP.steerActuatorDelay - 0.05, CP.steerActuatorDelay, CP.steerActuatorDelay + .05, CP.steerActuatorDelay + .1])
+    delay = interp(v_ego, [5.0, 10.0, 20.0, 30.0], [CP.steerActuatorDelay - 0.05, CP.steerActuatorDelay, CP.steerActuatorDelay + .05, CP.steerActuatorDelay + .1])
     self.steer_actuator_delay_to_send = delay
     current_curvature = self.mpc_solution.curvature[0]
     psi = interp(delay, self.t_idxs[:MPC_N + 1], self.mpc_solution.psi)
