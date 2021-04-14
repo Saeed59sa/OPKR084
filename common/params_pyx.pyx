@@ -166,6 +166,7 @@ keys = {
   b"RecordingQuality": [TxType.PERSISTENT],
   b"CruiseGapAdjust": [TxType.PERSISTENT],
   b"AutoEnable": [TxType.PERSISTENT],
+  b"CruiseAutoRes": [TxType.PERSISTENT],
 }
 
 def ensure_bytes(v):

@@ -115,6 +115,7 @@ def manager_init():
     ("RecordingQuality", "1"),
     ("CruiseGapAdjust", "0"),
     ("AutoEnable", "1"),
+    ("CruiseAutoRes", "0"),
   ]
 
   if params.get_bool("RecordFrontLock"):
