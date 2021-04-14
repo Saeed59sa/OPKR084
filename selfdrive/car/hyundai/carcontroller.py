@@ -107,6 +107,7 @@ class CarController():
     self.mode_change_switch = int(self.params.get("CruiseStatemodeSelInit"))
     self.opkr_variablecruise = self.params.get_bool("OpkrVariableCruise")
     self.opkr_autoresume = self.params.get_bool("OpkrAutoResume")
+    self.opkr_cruisegap_auto_adj = self.params.get_bool("CruiseGapAdjust")
 
     self.opkr_turnsteeringdisable = self.params.get_bool("OpkrTurnSteeringDisable")
 
@@ -449,11 +450,11 @@ class CarController():
             self.res_switch_timer = randint(10, 15)
           self.standstill_fault_reduce_timer += 1
         # gap save
-        elif 160 < self.standstill_fault_reduce_timer and self.cruise_gap_prev == 0 and self.opkr_autoresume: 
+        elif 160 < self.standstill_fault_reduce_timer and self.cruise_gap_prev == 0 and self.opkr_autoresume and self.opkr_cruisegap_auto_adj: 
           self.cruise_gap_prev = CS.cruiseGapSet
           self.cruise_gap_set_init = 1
         # gap adjust to 1 for fast start
-        elif 160 < self.standstill_fault_reduce_timer and CS.cruiseGapSet != 1.0 and self.opkr_autoresume:
+        elif 160 < self.standstill_fault_reduce_timer and CS.cruiseGapSet != 1.0 and self.opkr_autoresume and self.opkr_cruisegap_auto_adj:
           self.cruise_gap_switch_timer += 1
           if self.cruise_gap_switch_timer > 100:
             can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.GAP_DIST))
@@ -470,15 +471,16 @@ class CarController():
         self.resume_cnt += 1
       else:
         self.resume_cnt = 0
-      # gap restore
-      if self.dRel > 17 and self.vRel < 5 and self.cruise_gap_prev != CS.cruiseGapSet and self.cruise_gap_set_init == 1 and self.opkr_autoresume:
-        self.cruise_gap_switch_timer += 1
-        if self.cruise_gap_switch_timer > 50:
-          can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.GAP_DIST))
-          self.cruise_gap_switch_timer = 0
-      elif self.cruise_gap_prev == CS.cruiseGapSet and self.opkr_autoresume:
-        self.cruise_gap_set_init = 0
-        self.cruise_gap_prev = 0
+      if self.opkr_cruisegap_auto_adj:
+        # gap restore
+        if self.dRel > 17 and self.vRel < 5 and self.cruise_gap_prev != CS.cruiseGapSet and self.cruise_gap_set_init == 1 and self.opkr_autoresume:
+          self.cruise_gap_switch_timer += 1
+          if self.cruise_gap_switch_timer > 50:
+            can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.GAP_DIST))
+            self.cruise_gap_switch_timer = 0
+        elif self.cruise_gap_prev == CS.cruiseGapSet and self.opkr_autoresume:
+          self.cruise_gap_set_init = 0
+          self.cruise_gap_prev = 0
     
     if CS.out.brakeLights and CS.out.vEgo == 0 and not CS.acc_active:
       self.standstill_status_timer += 1

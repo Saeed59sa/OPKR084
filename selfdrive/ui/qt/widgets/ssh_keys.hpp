@@ -67,6 +67,18 @@ public:
   }
 };
 
+class CruiseGapAdjustToggle : public ToggleControl {
+  Q_OBJECT
+
+public:
+  CruiseGapAdjustToggle() : ToggleControl("정차시 크루즈 갭 자동변경", "정차시 빠른 출발을 위해 크루즈갭을 1칸으로 변경하며, 출발후 일정조건에 따라 다시 원래의 크루즈갭으로 돌아갑니다.", "../assets/offroad/icon_shell.png", Params().getBool("OpkrVariableCruise")) {
+    QObject::connect(this, &CruiseGapAdjustToggle::toggleFlipped, [=](int state) {
+      char value = state ? '1' : '0';
+      Params().put("CruiseGapAdjust", &value, 1);
+    });
+  }
+};
+
 class BatteryChargingControlToggle : public ToggleControl {
   Q_OBJECT
 

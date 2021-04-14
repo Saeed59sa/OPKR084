@@ -113,6 +113,7 @@ def manager_init():
     ("SteerThreshold", "150"),
     ("RecordingCount", "100"),
     ("RecordingQuality", "1"),
+    ("CruiseGapAdjust", "0"),
   ]
 
   if params.get_bool("RecordFrontLock"):
