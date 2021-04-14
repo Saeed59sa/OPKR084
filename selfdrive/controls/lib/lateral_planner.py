@@ -97,6 +97,7 @@ class LateralPlanner():
     self.standstill_elapsed_time = 0.0
     self.v_cruise_kph = 0
     self.stand_still = False
+    self.steer_actuator_delay_to_send = 0.0
     
     self.output_scale = 0.0
 
@@ -293,6 +294,7 @@ class LateralPlanner():
     # TODO this needs more thought, use .2s extra for now to estimate other delays
     delay = CP.steerActuatorDelay
     #delay = CP.steerActuatorDelay + .2
+    self.steer_actuator_delay_to_send = delay
     current_curvature = self.mpc_solution.curvature[0]
     psi = interp(delay, self.t_idxs[:MPC_N + 1], self.mpc_solution.psi)
     next_curvature_rate = self.mpc_solution.curvature_rate[0]
@@ -356,6 +358,7 @@ class LateralPlanner():
     plan_send.lateralPlan.vCurvature = float(sm['controlsState'].curvature)
     plan_send.lateralPlan.steerAngleDesireDeg = float(sm['controlsState'].steeringAngleDesiredDeg)
     plan_send.lateralPlan.lanelessMode = bool(self.laneless_mode_status)
+    plan_send.lateralPlan.steerActuatorDelay = float(self.steer_actuator_delay_to_send)
 
     if self.stand_still:
       self.standstill_elapsed_time += DT_MDL

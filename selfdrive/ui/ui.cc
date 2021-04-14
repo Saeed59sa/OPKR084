@@ -317,6 +317,7 @@ static void update_sockets(UIState *s) {
     scene.lateralPlan.steerRateCost = data.getSteerRateCost();
     scene.lateralPlan.standstillElapsedTime = data.getStandstillElapsedTime();
     scene.lateralPlan.lanelessModeStatus = data.getLanelessMode();
+    scene.lateralPlan.steerActuatorDelay = data.getSteerActuatorDelay();
   }
 }
 
