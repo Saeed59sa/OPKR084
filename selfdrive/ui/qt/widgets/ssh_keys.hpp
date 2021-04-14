@@ -67,6 +67,30 @@ public:
   }
 };
 
+class CruiseGapAdjustToggle : public ToggleControl {
+  Q_OBJECT
+
+public:
+  CruiseGapAdjustToggle() : ToggleControl("정차시 크루즈 갭 자동변경", "정차시 빠른 출발을 위해 크루즈갭을 1칸으로 변경하며, 출발후 일정조건에 따라 다시 원래의 크루즈갭으로 돌아갑니다.", "../assets/offroad/icon_shell.png", Params().getBool("CruiseGapAdjust")) {
+    QObject::connect(this, &CruiseGapAdjustToggle::toggleFlipped, [=](int state) {
+      char value = state ? '1' : '0';
+      Params().put("CruiseGapAdjust", &value, 1);
+    });
+  }
+};
+
+class AutoEnabledToggle : public ToggleControl {
+  Q_OBJECT
+
+public:
+  AutoEnabledToggle() : ToggleControl("자동 인게이지 활성", "디스인게이지 상태에서 크루즈 버튼상태가 대기상태(CRUISE표시만 나오고 속도 지정이 안된상태)일 경우 자동 인게이지를 활성화 합니다.", "../assets/offroad/icon_shell.png", Params().getBool("AutoEnable")) {
+    QObject::connect(this, &AutoEnabledToggle::toggleFlipped, [=](int state) {
+      char value = state ? '1' : '0';
+      Params().put("AutoEnable", &value, 1);
+    });
+  }
+};
+
 class BatteryChargingControlToggle : public ToggleControl {
   Q_OBJECT
 

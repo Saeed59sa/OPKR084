@@ -82,6 +82,7 @@ class Controls:
     openpilot_enabled_toggle = params.get_bool("OpenpilotEnabledToggle")
     passive = params.get_bool("Passive") or not openpilot_enabled_toggle
     self.commIssue_ignored = params.get_bool("ComIssueGone")
+    self.auto_enabled = params.get_bool("AutoEnable")
 
     # detect sound card presence and ensure successful init
     sounds_available = HARDWARE.get_sound_card_online()
@@ -174,7 +175,7 @@ class Controls:
     self.steerRatio_to_send = 0
 
   def auto_enable(self, CS):
-    if self.state != State.enabled and CS.vEgo >= 15 * CV.KPH_TO_MS and CS.gearShifter == 2 and self.sm['liveCalibration'].calStatus != Calibration.UNCALIBRATED:
+    if self.state != State.enabled and CS.vEgo >= 3 * CV.KPH_TO_MS and CS.gearShifter == 2 and self.sm['liveCalibration'].calStatus != Calibration.UNCALIBRATED:
       if self.sm.all_alive_and_valid() and self.enabled != self.controlsAllowed:
         self.events.add( EventName.pcmEnable )
 
@@ -291,7 +292,8 @@ class Controls:
     #  and self.CP.openpilotLongitudinalControl and CS.vEgo < 0.3:
     #  self.events.add(EventName.noTarget)
 
-    self.auto_enable( CS )
+    if self.auto_enabled:
+      self.auto_enable( CS )
 
   def data_sample(self):
     """Receive data from sockets and update carState"""
