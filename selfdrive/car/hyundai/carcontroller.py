@@ -108,6 +108,7 @@ class CarController():
     self.opkr_variablecruise = self.params.get_bool("OpkrVariableCruise")
     self.opkr_autoresume = self.params.get_bool("OpkrAutoResume")
     self.opkr_cruisegap_auto_adj = self.params.get_bool("CruiseGapAdjust")
+    self.opkr_cruise_auto_res = self.params.get_bool("CruiseAutoRes")
 
     self.opkr_turnsteeringdisable = self.params.get_bool("OpkrTurnSteeringDisable")
 
@@ -139,7 +140,6 @@ class CarController():
     self.lead2_status = False
     self.cut_in_detection = 0
     self.target_map_speed_camera = 0
-    self.v_set_dis_prev = 180
 
     self.cruise_gap = 0.0
     self.cruise_gap_prev = 0
@@ -152,6 +152,7 @@ class CarController():
     self.standstill_status = 0
     self.standstill_status_timer = 0
     self.res_switch_timer = 0
+    self.auto_res_timer = 0
 
     self.lkas_button_on = True
     self.longcontrol = CP.openpilotLongitudinalControl
@@ -481,6 +482,12 @@ class CarController():
         elif self.cruise_gap_prev == CS.cruiseGapSet and self.opkr_autoresume:
           self.cruise_gap_set_init = 0
           self.cruise_gap_prev = 0
+    elif not CS.acc_active and int(CS.VSetDis) > 30 and (CS.lead_distance < 149 or int(CS.clu_Vanz) > 30) and int(CS.clu_Vanz) >= 3 and CS.out.gasPressed and self.auto_res_timer <= 0 and self.opkr_cruise_auto_res:
+      can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.RES_ACCEL))  # auto res
+      if self.auto_res_timer <= 0:
+        self.auto_res_timer = randint(10, 15)
+    elif self.auto_res_timer > 0 and self.opkr_cruise_auto_res:
+      self.auto_res_timer -= 1
     
     if CS.out.brakeLights and CS.out.vEgo == 0 and not CS.acc_active:
       self.standstill_status_timer += 1
@@ -490,7 +497,6 @@ class CarController():
     if self.standstill_status == 1 and CS.out.vEgo > 1:
       self.standstill_status = 0
       self.standstill_fault_reduce_timer = 0
-      self.v_set_dis_prev = 180
       self.last_resume_frame = frame
       self.res_switch_timer = 0
       self.resume_cnt = 0
