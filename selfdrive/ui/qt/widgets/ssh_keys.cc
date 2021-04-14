@@ -1826,8 +1826,8 @@ SteerActuatorDelay::SteerActuatorDelay() : AbstractControl("SteerActuatorDelay",
     auto str = QString::fromStdString(Params().get("SteerActuatorDelayAdj"));
     int value = str.toInt();
     value = value - 1;
-    if (value <= 0 ) {
-      value = 0;
+    if (value <= 1 ) {
+      value = 1;
     } else {
     }
     QString values = QString::number(value);
