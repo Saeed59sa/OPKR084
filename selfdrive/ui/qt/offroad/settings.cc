@@ -444,6 +444,7 @@ QWidget * user_panel(QWidget * parent) {
   layout->addWidget(new SpeedLimitOffset());
   layout->addWidget(new MapDecelOnlyToggle());
   layout->addWidget(new CruiseGapAdjustToggle());
+  layout->addWidget(new AutoEnabledToggle());
 
   layout->addWidget(horizontal_line());
   layout->addWidget(new LabelControl("개발자", ""));
