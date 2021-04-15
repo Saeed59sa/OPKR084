@@ -224,7 +224,7 @@ class LateralPlanner():
       self.libmpc.set_weights(MPC_COST_LAT.PATH, MPC_COST_LAT.HEADING, CP.steerRateCost)
       self.laneless_mode_status = False
     # use laneless, it might mitigate abrubt steering at stopping?
-    elif sm['radarState'].leadOne.dRel < 25 and sm['radarState'].leadOne.vRel < 0 and (abs(sm['controlsState'].steeringAngleDesiredDeg) - abs(sm['carState'].steeringAngleDeg)) > 2.5 and self.lane_change_state == LaneChangeState.off:
+    elif sm['radarState'].leadOne.dRel < 25 and (sm['radarState'].leadOne.vRel < 0 or (sm['radarState'].leadOne.vRel >= 0 and v_ego < 5)) and (abs(sm['controlsState'].steeringAngleDesiredDeg) - abs(sm['carState'].steeringAngleDeg)) > 2 and self.lane_change_state == LaneChangeState.off:
       d_path_xyz = self.path_xyz
       path_cost = np.clip(abs(self.path_xyz[0,1]/self.path_xyz_stds[0,1]), 0.5, 5.0) * MPC_COST_LAT.PATH
       # Heading cost is useful at low speed, otherwise end of plan can be off-heading
@@ -233,7 +233,7 @@ class LateralPlanner():
       self.laneless_mode_status = True
       self.laneless_mode_at_stopping = True
       self.laneless_mode_at_stopping_timer = 200
-    elif self.laneless_mode_at_stopping and (v_ego < 1 or not self.laneless_mode_at_stopping_timer):
+    elif self.laneless_mode_at_stopping and (v_ego < 0.5 or self.laneless_mode_at_stopping_timer <= 0):
       d_path_xyz = self.LP.get_d_path(v_ego, self.t_idxs, self.path_xyz)
       self.libmpc.set_weights(MPC_COST_LAT.PATH, MPC_COST_LAT.HEADING, CP.steerRateCost)
       self.laneless_mode_status = False
