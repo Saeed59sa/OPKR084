@@ -116,6 +116,7 @@ def manager_init():
     ("CruiseGapAdjust", "0"),
     ("AutoEnable", "1"),
     ("CruiseAutoRes", "0"),
+    ("SteerWindDown", "0"),
   ]
 
   if params.get_bool("RecordFrontLock"):
