@@ -1,11 +1,10 @@
+import copy
 from cereal import car
-import cereal.messaging as messaging
 from selfdrive.car.hyundai.values import DBC, STEER_THRESHOLD, FEATURES, CAR
 from selfdrive.car.interfaces import CarStateBase
 from opendbc.can.parser import CANParser
 from selfdrive.config import Conversions as CV
 from selfdrive.car.hyundai.spdcontroller  import SpdController
-from selfdrive.car.hyundai.values import Buttons
 from common.params import Params
 
 GearShifter = car.CarState.GearShifter
@@ -231,18 +230,19 @@ class CarState(CarStateBase):
     ret.rightBlindspot = cp.vl["LCA11"]["CF_Lca_IndRight"] != 0
 
     # save the entire LKAS11, CLU11, SCC12 and MDPS12
-    self.lkas11 = cp_cam.vl["LKAS11"]
-    self.clu11 = cp.vl["CLU11"]
-    self.scc11 = cp_scc.vl["SCC11"]
-    self.scc12 = cp_scc.vl["SCC12"]
-    self.mdps12 = cp_mdps.vl["MDPS12"]
+    self.lkas11 = copy.copy(cp_cam.vl["LKAS11"])
+    self.clu11 = copy.copy(cp.vl["CLU11"])
+    self.scc11 = copy.copy(cp_scc.vl["SCC11"])
+    self.scc12 = copy.copy(cp_scc.vl["SCC12"])
+    self.mdps12 = copy.copy(cp_mdps.vl["MDPS12"])
     #self.park_brake = cp.vl["CGW1"]['CF_Gway_ParkBrakeSw']
     self.park_brake = cp.vl["TCS13"]['PBRAKE_ACT'] == 1
+    self.brake_hold = cp.vl["TCS15"]['AVH_LAMP'] == 2 # 0 OFF, 1 ERROR, 2 ACTIVE, 3 READY
+    self.brake_error = cp.vl["TCS13"]['ACCEnable'] != 0 # 0 ACC CONTROL ENABLED, 1-3 ACC CONTROL DISABLED
     self.steer_state = cp_mdps.vl["MDPS12"]['CF_Mdps_ToiActive'] #0 NOT ACTIVE, 1 ACTIVE
     self.cruise_unavail = cp.vl["TCS13"]['CF_VSM_Avail'] != 1
     self.lead_distance = cp_scc.vl["SCC11"]['ACC_ObjDist'] if not self.no_radar else 0
-    self.brake_hold = cp.vl["TCS15"]['AVH_LAMP'] == 2 # 0 OFF, 1 ERROR, 2 ACTIVE, 3 READY
-    self.brake_error = cp.vl["TCS13"]['ACCEnable'] != 0 # 0 ACC CONTROL ENABLED, 1-3 ACC CONTROL DISABLED
+
     ret.radarDistance = cp_scc.vl["SCC11"]['ACC_ObjDist'] if not self.no_radar else 0
     self.lkas_error = cp_cam.vl["LKAS11"]["CF_Lkas_LdwsSysState"] == 7
     if not self.lkas_error:
@@ -486,7 +486,8 @@ class CarState(CarStateBase):
         ("FCA_CmdAct", "FCA11", 0),
         ("CF_VSM_Warn", "FCA11", 0),
       ]
-      checks += [("FCA11", 50)]
+      if not CP.openpilotLongitudinalControl:
+        checks += [("FCA11", 50)]
 
     if CP.carFingerprint in [CAR.SANTA_FE]:
       checks.remove(("TCS13", 50))
@@ -632,7 +633,7 @@ class CarState(CarStateBase):
       ("CF_Lkas_MsgCount", "LKAS11", 0),
       ("CF_Lkas_FusionState", "LKAS11", 0),
       ("CF_Lkas_FcwOpt_USM", "LKAS11", 0),
-      ("CF_Lkas_LdwsOpt_USM", "LKAS11", 0)
+      ("CF_Lkas_LdwsOpt_USM", "LKAS11", 0),
     ]
 
     checks = [

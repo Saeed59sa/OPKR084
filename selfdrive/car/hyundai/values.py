@@ -583,11 +583,11 @@ FEATURES = {
   "use_elect_ems": {CAR.SONATA_HEV, CAR.SONATA19_HEV, CAR.KONA_EV, CAR.KONA_HEV, CAR.IONIQ_EV, CAR.IONIQ_HEV, CAR.GRANDEUR_HEV, CAR.NEXO,
                     CAR.K5_HEV, CAR.K7_HEV, CAR.NIRO_EV, CAR.NIRO_HEV},
   # send LFA MFA message for new HKG models
-  "send_lfahda_mfa": { CAR.GRANDEUR_HEV, CAR.GRANDEUR, CAR.KONA_HEV, CAR.SELTOS}, #차량의 LFA, HDA아이콘이 켜지게 하려면 여기다가 본인 차종을 넣으세요.
+  "send_lfahda_mfa": {CAR.GRANDEUR_HEV, CAR.GRANDEUR, CAR.SONATA, CAR.PALISADE, CAR.SONATA_HEV, CAR.SANTA_FE, CAR.KONA_EV, CAR.NIRO_EV, CAR.KONA_HEV, CAR.SELTOS}, # Insert your car in this if you want turn LFA icon on.
   "has_scc13": set([]),
   "has_scc14": set([]),
   # these cars use the FCA11 message for the AEB and FCW signals, all others use SCC12
-  "use_fca": {CAR.SONATA, CAR.AVANTE, CAR.I30, CAR.PALISADE, CAR.GENESIS_G70, CAR.KONA_HEV, CAR.SELTOS}, # Insert your car in this if you see front collision error on your cluster.
+  "use_fca": {CAR.SONATA, CAR.AVANTE, CAR.I30, CAR.PALISADE, CAR.GENESIS_G70, CAR.KONA_HEV, CAR.SELTOS, CAR.AVANTE}, # Insert your car in this if you see front collision error on your cluster.
 
   "use_bsm": {CAR.SONATA, CAR.PALISADE, CAR.GENESIS, CAR.GENESIS_G70, CAR.GENESIS_G80, CAR.GENESIS_G90, CAR.NEXO,
               CAR.KONA, CAR.SONATA_HEV, CAR.SONATA19_HEV, CAR.KONA_EV, CAR.KONA_HEV, CAR.IONIQ_EV, CAR.IONIQ_HEV, CAR.GRANDEUR_HEV,
