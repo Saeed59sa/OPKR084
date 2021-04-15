@@ -238,7 +238,7 @@ class LateralPlanner():
       self.libmpc.set_weights(MPC_COST_LAT.PATH, MPC_COST_LAT.HEADING, CP.steerRateCost)
       self.laneless_mode_status = False
       self.laneless_mode_at_stopping = False
-    elif self.laneless_mode_at_stopping and (v_ego < 11 or not self.laneless_mode_at_stopping_timer):
+    elif self.laneless_mode_at_stopping and (v_ego < 13 or not self.laneless_mode_at_stopping_timer):
       d_path_xyz = self.path_xyz
       path_cost = np.clip(abs(self.path_xyz[0,1]/self.path_xyz_stds[0,1]), 0.5, 5.0) * MPC_COST_LAT.PATH
       # Heading cost is useful at low speed, otherwise end of plan can be off-heading
