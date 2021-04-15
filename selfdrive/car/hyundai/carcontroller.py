@@ -84,6 +84,7 @@ class CarController():
     self.apply_steer_last = 0
     self.car_fingerprint = CP.carFingerprint
     self.steer_rate_limited = False
+    self.steer_wind_down = False
     self.accel_steady = 0
     self.lkas11_cnt = 0
     self.scc12_cnt = 0
@@ -110,6 +111,8 @@ class CarController():
     self.opkr_cruise_auto_res = self.params.get_bool("CruiseAutoRes")
 
     self.opkr_turnsteeringdisable = self.params.get_bool("OpkrTurnSteeringDisable")
+
+    self.steer_wind_down = self.params.get_bool("SteerWindDown")
 
     self.opkr_maxanglelimit = float(int(self.params.get("OpkrMaxAngleLimit")))
 
@@ -274,9 +277,15 @@ class CarController():
 
     # disable if steer angle reach 90 deg, otherwise mdps fault in some models
     if self.opkr_maxanglelimit >= 90:
-      lkas_active = enabled and abs(CS.out.steeringAngleDeg) < self.opkr_maxanglelimit and not spas_active
+      if self.steer_wind_down:
+        lkas_active = enabled and not CS.out.steerWarning and abs(CS.out.steeringAngleDeg) < self.opkr_maxanglelimit and not spas_active
+      else:
+        lkas_active = enabled and abs(CS.out.steeringAngleDeg) < self.opkr_maxanglelimit and not spas_active
     else:
-      lkas_active = enabled and not spas_active
+      if self.steer_wind_down:
+        lkas_active = enabled and not CS.out.steerWarning and not spas_active
+      else:
+        lkas_active = enabled and not spas_active
 
     if (( CS.out.leftBlinker and not CS.out.rightBlinker) or ( CS.out.rightBlinker and not CS.out.leftBlinker)) and CS.out.vEgo < LANE_CHANGE_SPEED_MIN and self.opkr_turnsteeringdisable:
       self.lanechange_manual_timer = 50
@@ -305,6 +314,10 @@ class CarController():
 
     if not lkas_active:
       apply_steer = 0
+      if self.apply_steer_last != 0:
+        self.steer_wind_down = True
+    if lkas_active or CS.out.steeringPressed:
+      self.steer_wind_down = False
 
     self.apply_accel_last = apply_accel
     self.apply_steer_last = apply_steer
@@ -356,12 +369,12 @@ class CarController():
 
     can_sends = []
     can_sends.append(create_lkas11(self.packer, frame, self.car_fingerprint, apply_steer, lkas_active,
-                                   CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
+                                   self.steer_wind_down, CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
                                    left_lane_warning, right_lane_warning, 0))
 
     if CS.mdps_bus or CS.scc_bus == 1: # send lkas11 bus 1 if mdps or scc is on bus 1
       can_sends.append(create_lkas11(self.packer, frame, self.car_fingerprint, apply_steer, lkas_active,
-                                   CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
+                                   self.steer_wind_down, CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
                                    left_lane_warning, right_lane_warning, 1))
     if frame % 2 and CS.mdps_bus: # send clu11 to mdps if it is not on bus 0
       can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.NONE, enabled_speed, CS.mdps_bus))

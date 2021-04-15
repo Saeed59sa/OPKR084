@@ -127,6 +127,18 @@ public:
   }
 };
 
+class SteerWindDownToggle : public ToggleControl {
+  Q_OBJECT
+
+public:
+  SteerWindDownToggle() : ToggleControl("Steer Wind Down", "Steer Warning 시 토크를 서서히 다운시킵니다. 일부 차량의 경우 조향각 제한등이 나타날 수 있으니 에러상관없이 최대조향각을 쓰려면 기능을 끄십시오.", "../assets/offroad/icon_shell.png", Params().getBool("SteerWindDown")) {
+    QObject::connect(this, &SteerWindDownToggle::toggleFlipped, [=](int state) {
+      char value = state ? '1' : '0';
+      Params().put("SteerWindDown", &value, 1);
+    });
+  }
+};
+
 class AutoScreenDimmingToggle : public ToggleControl {
   Q_OBJECT
 
