@@ -109,7 +109,7 @@ class SpdctrlRelaxed(SpdController):
               lead_wait_cmd = 8
         elif int(round(self.target_speed)) < int(CS.VSetDis) and self.map_enable and ((int(round(self.target_speed)) < int(round(self.cruise_set_speed_kph))) and self.target_speed != 0):
             self.seq_step_debug = "맵기반감속"
-            lead_wait_cmd, lead_set_speed = self.get_tm_speed(CS, 7, -1)
+            lead_wait_cmd, lead_set_speed = self.get_tm_speed(CS, 8, -1)
         # 거리 유지 조건
         elif d_delta < 0 or d_delta2 < 0 and not self.map_decel_only: # 기준유지거리(현재속도*0.4)보다 가까이 있게 된 상황
             if (int(CS.clu_Vanz)-1) <= int(CS.VSetDis) and dRele - dRelef > 3 and lead2_status:
