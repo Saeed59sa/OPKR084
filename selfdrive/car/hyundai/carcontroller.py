@@ -84,7 +84,7 @@ class CarController():
     self.apply_steer_last = 0
     self.car_fingerprint = CP.carFingerprint
     self.steer_rate_limited = False
-    self.steer_wind_down = False
+    self.steer_wind_down = 0
     self.accel_steady = 0
     self.lkas11_cnt = 0
     self.scc12_cnt = 0
@@ -112,7 +112,7 @@ class CarController():
 
     self.opkr_turnsteeringdisable = self.params.get_bool("OpkrTurnSteeringDisable")
 
-    self.steer_wind_down = self.params.get_bool("SteerWindDown")
+    self.steer_wind_down_enabled = self.params.get_bool("SteerWindDown")
 
     self.opkr_maxanglelimit = float(int(self.params.get("OpkrMaxAngleLimit")))
 
@@ -277,12 +277,12 @@ class CarController():
 
     # disable if steer angle reach 90 deg, otherwise mdps fault in some models
     if self.opkr_maxanglelimit >= 90:
-      if self.steer_wind_down:
+      if self.steer_wind_down_enabled:
         lkas_active = enabled and not CS.out.steerWarning and abs(CS.out.steeringAngleDeg) < self.opkr_maxanglelimit and not spas_active
       else:
         lkas_active = enabled and abs(CS.out.steeringAngleDeg) < self.opkr_maxanglelimit and not spas_active
     else:
-      if self.steer_wind_down:
+      if self.steer_wind_down_enabled:
         lkas_active = enabled and not CS.out.steerWarning and not spas_active
       else:
         lkas_active = enabled and not spas_active
@@ -315,9 +315,9 @@ class CarController():
     if not lkas_active:
       apply_steer = 0
       if self.apply_steer_last != 0:
-        self.steer_wind_down = True
+        self.steer_wind_down = 1
     if lkas_active or CS.out.steeringPressed:
-      self.steer_wind_down = False
+      self.steer_wind_down = 0
 
     self.apply_accel_last = apply_accel
     self.apply_steer_last = apply_steer
