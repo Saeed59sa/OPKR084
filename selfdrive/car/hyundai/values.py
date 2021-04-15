@@ -596,7 +596,7 @@ FEATURES = {
   "has_scc13": set([]),
   "has_scc14": set([]),
   # these cars use the FCA11 message for the AEB and FCW signals, all others use SCC12
-  "use_fca": {CAR.SONATA, CAR.AVANTE, CAR.I30, CAR.PALISADE, CAR.GENESIS_G70, CAR.KONA_HEV, CAR.SELTOS, CAR.AVANTE}, # Insert your car in this if you see front collision error on your cluster.
+  "use_fca": {CAR.SONATA, CAR.AVANTE, CAR.I30, CAR.PALISADE, CAR.GENESIS_G70, CAR.KONA_HEV, CAR.SELTOS}, # Insert your car in this if you see front collision error on your cluster.
 
   "use_bsm": {CAR.SONATA, CAR.PALISADE, CAR.GENESIS, CAR.GENESIS_G70, CAR.GENESIS_G80, CAR.GENESIS_G90, CAR.NEXO,
               CAR.KONA, CAR.SONATA_HEV, CAR.SONATA19_HEV, CAR.KONA_EV, CAR.KONA_HEV, CAR.IONIQ_EV, CAR.IONIQ_HEV, CAR.GRANDEUR_HEV,
