@@ -161,7 +161,7 @@ class CarController():
 
     self.safety_camera_timer = 0
 
-    self.model_speed_range = [30, 90, 255]
+    self.model_speed_range = [30, 100, 255]
     self.steerMax_range = [CarControllerParams.STEER_MAX, int(self.params.get("SteerMaxBaseAdj")), int(self.params.get("SteerMaxBaseAdj"))]
     self.steerDeltaUp_range = [CarControllerParams.STEER_DELTA_UP, int(self.params.get("SteerDeltaUpBaseAdj")), int(self.params.get("SteerDeltaUpBaseAdj"))]
     self.steerDeltaDown_range = [CarControllerParams.STEER_DELTA_DOWN, int(self.params.get("SteerDeltaDownBaseAdj")), int(self.params.get("SteerDeltaDownBaseAdj"))]
