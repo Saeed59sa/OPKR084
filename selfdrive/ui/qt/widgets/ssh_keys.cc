@@ -1328,7 +1328,7 @@ SpeedLimitOffset::SpeedLimitOffset() : AbstractControl("MAP기반 제한속도 �
     } else {
     }
     QString values = QString::number(value);
-    GLWindow::ui_state.speed_lim_off = value;
+    //GLWindow::ui_state.speed_lim_off = value;
     Params().put("OpkrSpeedLimitOffset", values.toStdString());
     refresh();
   });
@@ -1342,7 +1342,7 @@ SpeedLimitOffset::SpeedLimitOffset() : AbstractControl("MAP기반 제한속도 �
     } else {
     }
     QString values = QString::number(value);
-    GLWindow::ui_state.speed_lim_off = value;
+    //GLWindow::ui_state.speed_lim_off = value;
     Params().put("OpkrSpeedLimitOffset", values.toStdString());
     refresh();
   });
