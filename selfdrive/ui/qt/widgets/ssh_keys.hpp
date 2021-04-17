@@ -1126,3 +1126,10 @@ private:
 
   void refresh();
 };
+
+class GitHash : public AbstractControl {
+  Q_OBJECT
+
+public:
+  GitHash();
+};
