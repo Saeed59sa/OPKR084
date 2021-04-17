@@ -496,7 +496,7 @@ class CarController():
     elif CS.acc_active:
       self.cancel_counter = 0
 
-    if self.cancel_counter == 0 and not CS.acc_active and not CS.out.brakeLights and int(CS.VSetDis) > 30 and (CS.lead_distance < 149 or int(CS.clu_Vanz) > 30) and int(CS.clu_Vanz) >= 3 and self.auto_res_timer <= 0 and self.opkr_cruise_auto_res:
+    if self.model_speed > 95 and self.cancel_counter == 0 and not CS.acc_active and not CS.out.brakeLights and int(CS.VSetDis) > 30 and (CS.lead_distance < 149 or int(CS.clu_Vanz) > 30) and int(CS.clu_Vanz) >= 3 and self.auto_res_timer <= 0 and self.opkr_cruise_auto_res:
       can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.RES_ACCEL))  # auto res
       if self.auto_res_timer <= 0:
         self.auto_res_timer = randint(10, 15)
