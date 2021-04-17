@@ -169,6 +169,7 @@ def manager_init():
     os.chmod("/dev/shm", 0o777)
     os.chmod(os.path.join(BASEDIR, "cereal"), 0o755)
 
+  os.system("/data/openpilot/gitcommit.sh")
 
 def manager_prepare():
   for p in managed_processes.values():

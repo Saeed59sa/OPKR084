@@ -236,12 +236,6 @@ function launch {
     chmod 600 /data/params/d/GithubSshKeys
   fi
 
-  # acquire git hash from remote
-  cd /data/openpilot
-  CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
-  /data/data/com.termux/files/usr/bin/git fetch
-  REMOTE_HASH=$(git rev-parse --verify origin/$CURRENT_BRANCH)
-  echo -n "$REMOTE_HASH" > /data/params/d/GitCommitRemote
 
   # start manager
   cd selfdrive/manager
