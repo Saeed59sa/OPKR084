@@ -114,11 +114,11 @@ void SshControl::parseResponse(){
 
 GitHash::GitHash() : AbstractControl("HASH(L/R)", "", "") {
 
-  QString lhash = QString::fromStdString(Params().get("GitCommit"));
+  QString lhash = QString::fromStdString(Params().get("GitCommit").substr(0, 10));
   QString rhash = QString::fromStdString(Params().get("GitCommitRemote"));
   hlayout->addStretch(1);
   
-  local_hash.setText(QString::fromStdString(Params().get("GitCommit")));
+  local_hash.setText(QString::fromStdString(Params().get("GitCommit").substr(0, 10)));
   remote_hash.setText(QString::fromStdString(Params().get("GitCommitRemote")));
   local_hash.setStyleSheet("color: #aaaaaa");
   if (lhash == rhash) {
