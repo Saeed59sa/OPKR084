@@ -241,7 +241,7 @@ function launch {
   CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
   /data/data/com.termux/files/usr/bin/git fetch
   REMOTE_HASH=$(git rev-parse --verify origin/$CURRENT_BRANCH)
-  echo "$REMOTE_HASH" | cut -c1-10 > /data/params/d/GitCommitRemote
+  echo -n "$REMOTE_HASH" > /data/params/d/GitCommitRemote
 
   # start manager
   cd selfdrive/manager
