@@ -115,10 +115,16 @@ void SshControl::parseResponse(){
 GitHash::GitHash() : AbstractControl("HASH(L/R)", "", "") {
 
   hlayout->addStretch(1);
-  local_hash = QString::fromStdString(Params().get("GitCommit"));
-  remote_hash = QString::fromStdString(Params().get("GitCommitRemote"));
-  hlayout->addWidget(local_hash);
-  hlayout->addWidget(remote_hash);
+  local_hash.setText(QString::fromStdString(Params().get("GitCommit")));
+  remote_hash.setText(QString::fromStdString(Params().get("GitCommitRemote")));
+  local_hash.setStyleSheet("color: #aaaaaa");
+  if (local_hash == remote_hash) {
+    remote_hash.setStyleSheet("color: #aaaaaa");
+  } else {
+    remote_hash.setStyleSheet("color: #0099ff");
+  }
+  hlayout->addWidget(&local_hash);
+  hlayout->addWidget(&remote_hash);
 }
 
 OpenpilotView::OpenpilotView() : AbstractControl("오픈파일럿 주행화면 미리보기", "오픈파일럿 주행화면을 미리보기 합니다.", "") {

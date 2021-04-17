@@ -1134,6 +1134,6 @@ public:
   GitHash();
 
 private:
-  QString local_hash;
-  QString remote_hash;
+  QLabel local_hash;
+  QLabel remote_hash;
 };
