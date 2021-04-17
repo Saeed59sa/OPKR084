@@ -112,6 +112,26 @@ void SshControl::parseResponse(){
   reply = nullptr;
 }
 
+GitHash::GitHash() : AbstractControl("커밋(로컬/리모트)", "", "") {
+
+  QString lhash = QString::fromStdString(Params().get("GitCommit").substr(0, 10));
+  QString rhash = QString::fromStdString(Params().get("GitCommitRemote").substr(0, 10));
+  hlayout->addStretch(1);
+  
+  local_hash.setText(QString::fromStdString(Params().get("GitCommit").substr(0, 10)));
+  remote_hash.setText(QString::fromStdString(Params().get("GitCommitRemote").substr(0, 10)));
+  //local_hash.setAlignment(Qt::AlignVCenter);
+  remote_hash.setAlignment(Qt::AlignVCenter);
+  local_hash.setStyleSheet("color: #aaaaaa");
+  if (lhash == rhash) {
+    remote_hash.setStyleSheet("color: #aaaaaa");
+  } else {
+    remote_hash.setStyleSheet("color: #0099ff");
+  }
+  hlayout->addWidget(&local_hash);
+  hlayout->addWidget(&remote_hash);
+}
+
 OpenpilotView::OpenpilotView() : AbstractControl("오픈파일럿 주행화면 미리보기", "오픈파일럿 주행화면을 미리보기 합니다.", "") {
 
   // setup widget
@@ -1328,7 +1348,7 @@ SpeedLimitOffset::SpeedLimitOffset() : AbstractControl("MAP기반 제한속도 �
     } else {
     }
     QString values = QString::number(value);
-    GLWindow::ui_state.speed_lim_off = value;
+    //GLWindow::ui_state.speed_lim_off = value;
     Params().put("OpkrSpeedLimitOffset", values.toStdString());
     refresh();
   });
@@ -1342,7 +1362,7 @@ SpeedLimitOffset::SpeedLimitOffset() : AbstractControl("MAP기반 제한속도 �
     } else {
     }
     QString values = QString::number(value);
-    GLWindow::ui_state.speed_lim_off = value;
+    //GLWindow::ui_state.speed_lim_off = value;
     Params().put("OpkrSpeedLimitOffset", values.toStdString());
     refresh();
   });

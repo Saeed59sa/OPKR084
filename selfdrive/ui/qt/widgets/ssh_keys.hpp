@@ -1126,3 +1126,14 @@ private:
 
   void refresh();
 };
+
+class GitHash : public AbstractControl {
+  Q_OBJECT
+
+public:
+  GitHash();
+
+private:
+  QLabel local_hash;
+  QLabel remote_hash;
+};

@@ -166,6 +166,7 @@ typedef struct UIScene {
   int recording_count;
   int recording_quality;
   float steerMax_V;
+  int speed_lim_off;
 
   NetStatus athenaStatus;
 
@@ -253,7 +254,6 @@ typedef struct UIState {
   bool awake;
 
   bool is_speed_over_limit;
-  int speed_lim_off;
   bool is_OpenpilotViewEnabled;
   bool nOpkrAutoScreenDimming;
   int nOpkrUIBrightness;

@@ -278,16 +278,10 @@ class CarController():
     spas_active = CS.spas_enabled and enabled and (self.spas_always or CS.out.vEgo < 7.0) # 25km/h
 
     # disable if steer angle reach 90 deg, otherwise mdps fault in some models
-    if self.opkr_maxanglelimit >= 90:
-      if self.steer_wind_down_enabled:
-        lkas_active = enabled and not CS.out.steerWarning and abs(CS.out.steeringAngleDeg) < self.opkr_maxanglelimit and not spas_active
-      else:
-        lkas_active = enabled and abs(CS.out.steeringAngleDeg) < self.opkr_maxanglelimit and not spas_active
+    if self.opkr_maxanglelimit >= 90 and not self.steer_wind_down_enabled:
+      lkas_active = enabled and abs(CS.out.steeringAngleDeg) < self.opkr_maxanglelimit and not spas_active
     else:
-      if self.steer_wind_down_enabled:
-        lkas_active = enabled and not CS.out.steerWarning and not spas_active
-      else:
-        lkas_active = enabled and not spas_active
+      lkas_active = enabled and not CS.out.steerWarning and not spas_active
 
     if (( CS.out.leftBlinker and not CS.out.rightBlinker) or ( CS.out.rightBlinker and not CS.out.leftBlinker)) and CS.out.vEgo < LANE_CHANGE_SPEED_MIN and self.opkr_turnsteeringdisable:
       self.lanechange_manual_timer = 50

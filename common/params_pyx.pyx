@@ -35,6 +35,7 @@ keys = {
   b"GitDiff": [TxType.PERSISTENT],
   b"GitBranch": [TxType.PERSISTENT],
   b"GitCommit": [TxType.PERSISTENT],
+  b"GitCommitRemote": [TxType.PERSISTENT],
   b"GitRemote": [TxType.PERSISTENT],
   b"GithubSshKeys": [TxType.PERSISTENT],
   b"GithubUsername": [TxType.PERSISTENT],

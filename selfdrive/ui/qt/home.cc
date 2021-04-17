@@ -313,6 +313,7 @@ void GLWindow::initializeGL() {
   ui_state.scene.laneless_mode = std::stoi(Params().get("LanelessMode"));
   ui_state.scene.recording_count = std::stoi(Params().get("RecordingCount"));
   ui_state.scene.recording_quality = std::stoi(Params().get("RecordingQuality"));
+  ui_state.scene.speed_lim_off = std::stoi(Params().get("OpkrSpeedLimitOffset"));
 }
 
 void GLWindow::backlightUpdate() {
