@@ -102,6 +102,8 @@ class CarController():
 
     self.need_brake = False
     self.need_brake_timer = 0
+
+    self.cancel_counter = 0
     
     self.params = Params()
     self.mode_change_switch = int(self.params.get("CruiseStatemodeSelInit"))
@@ -227,7 +229,7 @@ class CarController():
     lateral_plan = sm['lateralPlan']
     self.outScale = lateral_plan.outputScale
     self.vCruiseSet = lateral_plan.vCruiseSet
-    
+        
     #self.model_speed = interp(abs(lateral_plan.vCurvature), [0.0002, 0.01], [255, 30])
     #Hoya
     self.model_speed = interp(abs(lateral_plan.vCurvature), [0.0, 0.0002, 0.001, 0.003, 0.01, 0.02, 0.025], [255, 160, 120, 95, 65, 35, 15])
@@ -495,7 +497,12 @@ class CarController():
           self.cruise_gap_set_init = 0
           self.cruise_gap_prev = 0
     
-    if not CS.acc_active and not CS.out.brakeLights and self.model_speed > 95 and int(CS.VSetDis) > 30 and (CS.lead_distance < 149 or int(CS.clu_Vanz) > 30) and int(CS.clu_Vanz) >= 3 and self.auto_res_timer <= 0 and self.opkr_cruise_auto_res:
+    if CS.cruise_buttons == 4:
+      self.cancel_counter += 1
+    elif CS.acc_active:
+      self.cancel_counter = 0
+
+    if self.model_speed > 95 and self.cancel_counter == 0 and not CS.acc_active and not CS.out.brakeLights and int(CS.VSetDis) > 30 and (CS.lead_distance < 149 or int(CS.clu_Vanz) > 30) and int(CS.clu_Vanz) >= 3 and self.auto_res_timer <= 0 and self.opkr_cruise_auto_res:
       can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.RES_ACCEL))  # auto res
       if self.auto_res_timer <= 0:
         self.auto_res_timer = randint(10, 15)
