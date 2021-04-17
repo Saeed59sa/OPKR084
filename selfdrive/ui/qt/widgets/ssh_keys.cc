@@ -112,7 +112,7 @@ void SshControl::parseResponse(){
   reply = nullptr;
 }
 
-GitHash::GitHash() : AbstractControl("HASH(L/R)", "", "") {
+GitHash::GitHash() : AbstractControl("커밋(로컬/리모트)", "", "") {
 
   QString lhash = QString::fromStdString(Params().get("GitCommit").substr(0, 10));
   QString rhash = QString::fromStdString(Params().get("GitCommitRemote").substr(0, 10));
