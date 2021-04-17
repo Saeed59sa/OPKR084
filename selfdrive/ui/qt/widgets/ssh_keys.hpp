@@ -1132,4 +1132,8 @@ class GitHash : public AbstractControl {
 
 public:
   GitHash();
+
+private:
+  QString local_hash;
+  QString remote_hash;
 };
