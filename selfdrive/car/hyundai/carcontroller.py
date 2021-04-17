@@ -495,7 +495,7 @@ class CarController():
           self.cruise_gap_set_init = 0
           self.cruise_gap_prev = 0
     
-    if not CS.acc_active and not CS.out.brakeLights self.model_speed > 95 and int(CS.VSetDis) > 30 and (CS.lead_distance < 149 or int(CS.clu_Vanz) > 30) and int(CS.clu_Vanz) >= 3 and self.auto_res_timer <= 0 and self.opkr_cruise_auto_res:
+    if not CS.acc_active and not CS.out.brakeLights and self.model_speed > 95 and int(CS.VSetDis) > 30 and (CS.lead_distance < 149 or int(CS.clu_Vanz) > 30) and int(CS.clu_Vanz) >= 3 and self.auto_res_timer <= 0 and self.opkr_cruise_auto_res:
       can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.RES_ACCEL))  # auto res
       if self.auto_res_timer <= 0:
         self.auto_res_timer = randint(10, 15)
