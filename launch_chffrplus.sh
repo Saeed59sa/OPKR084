@@ -236,7 +236,6 @@ function launch {
     chmod 600 /data/params/d/GithubSshKeys
   fi
 
-
   # start manager
   cd selfdrive/manager
   ./build.py && ./manager.py
