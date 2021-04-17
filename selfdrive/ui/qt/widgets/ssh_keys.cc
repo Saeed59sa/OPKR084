@@ -117,8 +117,8 @@ GitHash::GitHash() : AbstractControl("HASH(L/R)", "", "") {
   hlayout->addStretch(1);
   local_hash = QString::fromStdString(Params().get("GitCommit"));
   remote_hash = QString::fromStdString(Params().get("GitCommitRemote"));
-  hlayout->addWidget(&local_hash);
-  hlayout->addWidget(&remote_hash);
+  hlayout->addWidget(local_hash);
+  hlayout->addWidget(remote_hash);
 }
 
 OpenpilotView::OpenpilotView() : AbstractControl("오픈파일럿 주행화면 미리보기", "오픈파일럿 주행화면을 미리보기 합니다.", "") {
