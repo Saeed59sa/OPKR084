@@ -299,8 +299,8 @@ class LateralPlanner():
     self.cur_state.curvature = interp(DT_MDL, self.t_idxs[:MPC_N + 1], self.mpc_solution.curvature)
 
     # TODO this needs more thought, use .2s extra for now to estimate other delays
-    #delay = CP.steerActuatorDelay # + .2
-    delay = interp(v_ego, [5.0, 10.0, 20.0, 30.0], [CP.steerActuatorDelay - 0.05, CP.steerActuatorDelay, CP.steerActuatorDelay + .05, CP.steerActuatorDelay + .1])
+    delay = CP.steerActuatorDelay # + .2
+    #delay = interp(v_ego, [5.0, 10.0, 20.0, 30.0], [CP.steerActuatorDelay - 0.05, CP.steerActuatorDelay, CP.steerActuatorDelay + .05, CP.steerActuatorDelay + .1])
     self.steer_actuator_delay_to_send = delay
     current_curvature = self.mpc_solution.curvature[0]
     psi = interp(delay, self.t_idxs[:MPC_N + 1], self.mpc_solution.psi)
