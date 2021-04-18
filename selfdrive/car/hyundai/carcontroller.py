@@ -501,7 +501,7 @@ class CarController():
       if self.auto_res_timer <= 0:
         self.auto_res_timer = randint(10, 15)
     elif self.auto_res_timer > 0 and self.opkr_cruise_auto_res:
-      can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.SET_DECEL))  # set current speed 
+      #can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.SET_DECEL))  # set current speed 
       self.auto_res_timer -= 1
     
     if CS.out.brakeLights and CS.out.vEgo == 0 and not CS.acc_active:
