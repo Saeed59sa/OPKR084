@@ -24,14 +24,14 @@ QWidget * toggles_panel() {
   QVBoxLayout *toggles_list = new QVBoxLayout();
 
   toggles_list->addWidget(new ParamControl("OpenpilotEnabledToggle",
-                                            "오픈파일럿 사용",
-                                            "어댑티브 크루즈 컨트롤 및 차선 유지 지원을 위해 오픈파일럿 시스템을 사용하십시오. 이 기능을 사용하려면 항상 주의를 기울여야 합니다. 이 설정을 변경하는 것은 자동차의 전원이 꺼졌을 때 적용됩니다.",
+                                            "استخدام الطيار المفتوح",
+                                            "استخدم نظام التوجيه المفتوح للتحكم التكيفي في ثبات السرعة والمساعدة في الحفاظ على المسار.  يتطلب استخدام هذه الميزة الرعاية في جميع الأوقات.  يسري تغيير هذا الإعداد عند إيقاف تشغيل السيارة.",
                                             "../assets/offroad/icon_openpilot.png"
                                               ));
   toggles_list->addWidget(horizontal_line());
   toggles_list->addWidget(new ParamControl("IsLdwEnabled",
-                                            "차선이탈 경보 사용",
-                                            "50km/h이상의 속도로 주행하는 동안 방향 지시등이 활성화되지 않은 상태에서 차량이 감지된 차선 위를 넘어갈 경우 원래 차선으로 다시 방향을 전환하도록 경고를 보냅니다.",
+                                            "استخدم تحذير مغادرة المسار",
+                                            "إذا تجاوزت السيارة الحارة المكتشفة بينما لم يتم تنشيط إشارة الانعطاف أثناء القيادة بسرعة 50 كم / ساعة أو أكثر ، فسيتم إصدار تحذير للعودة إلى الحارة الأصلية.",
                                             "../assets/offroad/icon_warning.png"
                                               ));
   toggles_list->addWidget(horizontal_line());
