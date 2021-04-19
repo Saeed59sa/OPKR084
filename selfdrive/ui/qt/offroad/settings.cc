@@ -112,9 +112,9 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
                                       GLWindow::ui_state.scene.driver_view = true; }
                                     ));
 
-  QString resetCalibDesc = "오픈파일럿을 사용하려면 장치를 왼쪽 또는 오른쪽으로 4°, 위 또는 아래로 5° 이내에 장착해야 합니다. 오픈파일럿이 지속적으로 보정되고 있으므로 재설정할 필요가 거의 없습니다.";
-  ButtonControl *resetCalibBtn = new ButtonControl("캘리브레이션정보", "확인", resetCalibDesc, [=]() {
-    QString desc = "[왼쪽/오른쪽 4° 및 위/아래 5° 이내]";
+  QString resetCalibDesc = "لاستخدام دليل مفتوح ، يجب تركيب الجهاز في حدود 4 درجات إلى اليسار أو اليمين و 5 درجات لأعلى أو لأسفل. تتم معايرة الطيار المفتوح باستمرار ، لذلك ليست هناك حاجة كبيرة لإعادة ضبطه.";
+  ButtonControl *resetCalibBtn = new ButtonControl("معلومات المعايرة", "يتأكد", resetCalibDesc, [=]() {
+    QString desc = "[ضمن 4 درجات يسار / يمين و 5 درجات أعلى / أسفل]";
     std::string calib_bytes = Params().get("CalibrationParams");
     if (!calib_bytes.empty()) {
       try {
@@ -124,12 +124,12 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
         if (calib.getCalStatus() != 0) {
           double pitch = calib.getRpyCalib()[1] * (180 / M_PI);
           double yaw = calib.getRpyCalib()[2] * (180 / M_PI);
-          desc += QString("\n장치가 %1° %2 그리고 %3° %4 위치해 있습니다.")
-                                .arg(QString::number(std::abs(pitch), 'g', 1), pitch > 0 ? "위로" : "아래로",
-                                     QString::number(std::abs(yaw), 'g', 1), yaw > 0 ? "오른쪽으로" : "왼쪽으로");
+          desc += QString("\n الجهاز موجود٪ 1 °٪ 2 و٪ 3 °٪ 4.")
+                                .arg(QString::number(std::abs(pitch), 'g', 1), pitch > 0 ? "فوق" : "تحت",
+                                     QString::number(std::abs(yaw), 'g', 1), yaw > 0 ? "إلى اليمين" : "إلى اليسار");
         }
       } catch (kj::Exception) {
-        qInfo() << "캘리브레이션 파라미터 유효하지 않음";
+        qInfo() << "معلمة المعايرة غير صالحة";
       }
     }
     if (ConfirmationDialog::confirm(desc)) {
@@ -147,29 +147,29 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
         if (calib.getCalStatus() != 0) {
           double pitch = calib.getRpyCalib()[1] * (180 / M_PI);
           double yaw = calib.getRpyCalib()[2] * (180 / M_PI);
-          desc += QString("\n장치가 %1° %2 그리고 %3° %4 위치해 있습니다.")
-                                .arg(QString::number(std::abs(pitch), 'g', 1), pitch > 0 ? "위로" : "아래로",
-                                     QString::number(std::abs(yaw), 'g', 1), yaw > 0 ? "오른쪽으로" : "왼쪽으로");
+          desc += QString("\n الجهاز موجود٪ 1 °٪ 2 و٪ 3 °٪ 4.")
+                                .arg(QString::number(std::abs(pitch), 'g', 1), pitch > 0 ? "فوق" : "تحت",
+                                     QString::number(std::abs(yaw), 'g', 1), yaw > 0 ? "إلى اليمين" : "إلى اليسار");
         }
       } catch (kj::Exception) {
-        qInfo() << "캘리브레이션 파라미터 유효하지 않음";
+        qInfo() << "معلمة المعايرة غير صالحة";
       }
     }
     resetCalibBtn->setDescription(desc);
   });
   offroad_btns.append(resetCalibBtn);
 
-  offroad_btns.append(new ButtonControl("트레이닝가이드 보기", "다시보기",
-                                        "오픈파일럿에 대한 규칙, 기능, 제한내용 등을 확인하세요.", [=]() {
-    if (ConfirmationDialog::confirm("트레이닝 가이드를 다시 확인하시겠습니까?")) {
+  offroad_btns.append(new ButtonControl("شاهد دليل التدريب", "اعادتها",
+                                        "تحقق من القواعد والوظائف والقيود الخاصة بالطيارين المفتوحين..", [=]() {
+    if (ConfirmationDialog::confirm("هل ترغب في مراجعة دليل التدريب مرة أخرى؟")) {
       Params().remove("CompletedTrainingVersion");
       emit reviewTrainingGuide();
     }
   }));
 
-  QString brand = params.getBool("Passive") ? "대시캠" : "오픈파일럿";
-  offroad_btns.append(new ButtonControl(brand + " 제거", "제거", "", [=]() {
-    if (ConfirmationDialog::confirm("제거하시겠습니까?")) {
+  QString brand = params.getBool("Passive") ? "داش كام" : "افتح الطيار";
+  offroad_btns.append(new ButtonControl(brand + " إزالة", "إزالة", "", [=]() {
+    if (ConfirmationDialog::confirm("هل تريد إزالة?")) {
       Params().putBool("DoUninstall", true);
     }
   }));
@@ -186,19 +186,19 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
   QHBoxLayout *cal_param_init_layout = new QHBoxLayout();
   cal_param_init_layout->setSpacing(50);
 
-  QPushButton *calinit_btn = new QPushButton("캘리브레이션 리셋");
+  QPushButton *calinit_btn = new QPushButton("إعادة ضبط المعايرة");
   cal_param_init_layout->addWidget(calinit_btn);
   QObject::connect(calinit_btn, &QPushButton::released, [=]() {
-    if (ConfirmationDialog::confirm("캘리브레이션을 초기화할까요? 자동 재부팅됩니다.")) {
+    if (ConfirmationDialog::confirm("هل يجب علي إعادة ضبط المعايرة؟ سيتم إعادة التشغيل تلقائيًا.")) {
       Params().remove("CalibrationParams");
       QProcess::execute("reboot");
     }
   });
 
-  QPushButton *paraminit_btn = new QPushButton("파라미터 초기화");
+  QPushButton *paraminit_btn = new QPushButton("تهيئة المعلمة");
   cal_param_init_layout->addWidget(paraminit_btn);
   QObject::connect(paraminit_btn, &QPushButton::released, [=]() {
-    if (ConfirmationDialog::confirm("파라미터를 초기상태로 되돌립니다. 진행하시겠습니까?")) {
+    if (ConfirmationDialog::confirm("إعادة المعلمات إلى حالتها الأولية. هل ترغب في المتابعة؟")) {
       QProcess::execute("/data/openpilot/init_param.sh");
     }
   });
@@ -207,18 +207,18 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
   QHBoxLayout *presetone_layout = new QHBoxLayout();
   presetone_layout->setSpacing(50);
 
-  QPushButton *presetoneload_btn = new QPushButton("프리셋1 불러오기");
+  QPushButton *presetoneload_btn = new QPushButton("تحميل الإعداد المسبق 1");
   presetone_layout->addWidget(presetoneload_btn);
   QObject::connect(presetoneload_btn, &QPushButton::released, [=]() {
-    if (ConfirmationDialog::confirm("프리셋1을 불러올까요?")) {
+    if (ConfirmationDialog::confirm("هل يجب علينا تحميل الإعداد المسبق 1؟")) {
       QProcess::execute("/data/openpilot/load_preset1.sh");
     }
   });
 
-  QPushButton *presetonesave_btn = new QPushButton("프리셋1 저장하기");
+  QPushButton *presetonesave_btn = new QPushButton("حفظ الإعداد المسبق 1");
   presetone_layout->addWidget(presetonesave_btn);
   QObject::connect(presetonesave_btn, &QPushButton::released, [=]() {
-    if (ConfirmationDialog::confirm("프리셋1을 저장할까요?")) {
+    if (ConfirmationDialog::confirm("حفظ الإعداد المسبق 1؟")) {
       QProcess::execute("/data/openpilot/save_preset1.sh");
     }
   });
