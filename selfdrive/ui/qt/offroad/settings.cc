@@ -330,8 +330,7 @@ QWidget * network_panel(QWidget * parent) {
                                       [=]() { HardwareEon::launch_wifi(); }));
   layout->addWidget(horizontal_line());
 
-  layout->addWidget(new ButtonControl("إعدادات الربط
-", "열기", "",
+  layout->addWidget(new ButtonControl("إعدادات الربط", "열기", "",
                                       [=]() { HardwareEon::launch_tethering(); }));
   layout->addWidget(horizontal_line());
 
