@@ -36,8 +36,8 @@ QWidget * toggles_panel() {
                                               ));
   toggles_list->addWidget(horizontal_line());
   toggles_list->addWidget(new ParamControl("IsRHD",
-                                            "우핸들 운전방식 사용",
-                                            "오픈파일럿이 좌측 교통 규칙을 준수하도록 허용하고 우측 운전석에서 운전자 모니터링을 수행하십시오.",
+                                            "استخدام طريقة القيادة اليمنى",
+                                            "اسمح للطيار المفتوح بالالتزام بقواعد المرور على اليسار وإجراء مراقبة للسائق من مقعد السائق الأيمن.",
                                             "../assets/offroad/icon_openpilot_mirrored.png"
                                             ));
   toggles_list->addWidget(horizontal_line());
