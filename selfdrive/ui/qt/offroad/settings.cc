@@ -195,7 +195,7 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
     }
   });
 
-  QPushButton *paraminit_btn = new QPushButton("تهيئة المعلمة");
+  QPushButton *paraminit_btn = new QPushButton("تهيئة المعايرة");
   cal_param_init_layout->addWidget(paraminit_btn);
   QObject::connect(paraminit_btn, &QPushButton::released, [=]() {
     if (ConfirmationDialog::confirm("إعادة المعلمات إلى حالتها الأولية. هل ترغب في المتابعة؟")) {
@@ -330,7 +330,7 @@ QWidget * network_panel(QWidget * parent) {
                                       [=]() { HardwareEon::launch_wifi(); }));
   layout->addWidget(horizontal_line());
 
-  layout->addWidget(new ButtonControl("إعدادات الربط", "열기", "",
+  layout->addWidget(new ButtonControl("إعدادات الربط", "الحرارة", "",
                                       [=]() { HardwareEon::launch_tethering(); }));
   layout->addWidget(horizontal_line());
 
@@ -406,7 +406,7 @@ QWidget * user_panel(QWidget * parent) {
   QVBoxLayout *layout = new QVBoxLayout;
 
   // OPKR
-  layout->addWidget(new LabelControl("UI설정", ""));
+  layout->addWidget(new LabelControl("UISET", ""));
   layout->addWidget(new AutoShutdown());
   layout->addWidget(new AutoScreenDimmingToggle());
   layout->addWidget(new VolumeControl());
@@ -420,15 +420,15 @@ QWidget * user_panel(QWidget * parent) {
   layout->addWidget(new RecordCount());
   layout->addWidget(new RecordQuality());
   const char* record_del = "rm -f /storage/emulated/0/videos/*";
-  layout->addWidget(new ButtonControl("녹화파일 전부 삭제", "실행", "저장된 녹화파일을 모두 삭제합니다.",
+  layout->addWidget(new ButtonControl("احذف جميع الملفات المسجلة", "إعدام", "احذف جميع الملفات المسجلة المحفوظة.",
                                       [=]() { 
-                                        if (ConfirmationDialog::confirm("저장된 녹화파일을 모두 삭제합니다. 진행하시겠습니까?")){
+                                        if (ConfirmationDialog::confirm("احذف جميع الملفات المسجلة المحفوظة. هل ترغب في المتابعة؟")){
                                           std::system(record_del);
                                         }
                                       }));
 
   layout->addWidget(horizontal_line());
-  layout->addWidget(new LabelControl("주행설정", ""));
+  layout->addWidget(new LabelControl("إعداد القيادة", ""));
   layout->addWidget(new AutoResumeToggle());
   layout->addWidget(new VariableCruiseToggle());
   layout->addWidget(new VariableCruiseProfile());
@@ -450,7 +450,7 @@ QWidget * user_panel(QWidget * parent) {
   layout->addWidget(new SteerWindDownToggle());
 
   layout->addWidget(horizontal_line());
-  layout->addWidget(new LabelControl("개발자", ""));
+  layout->addWidget(new LabelControl("مطور", ""));
   layout->addWidget(new DebugUiOneToggle());
   layout->addWidget(new DebugUiTwoToggle());
   layout->addWidget(new PrebuiltToggle());
@@ -460,9 +460,9 @@ QWidget * user_panel(QWidget * parent) {
   layout->addWidget(new GearDToggle());
   layout->addWidget(new ComIssueToggle());
   const char* cal_ok = "cp -f /data/openpilot/selfdrive/assets/addon/param/CalibrationParams /data/params/d/";
-  layout->addWidget(new ButtonControl("캘리브레이션 강제 활성화", "실행", "실주행으로 캘리브레이션을 설정하지 않고 이온을 초기화 한경우 인게이지 확인용도로 캘리브레이션을 강제 설정합니다.",
+  layout->addWidget(new ButtonControl("تفعيل معايرة القوة", "إعدام", "إذا تمت تهيئة الأيون بدون ضبط المعايرة على التشغيل الحقيقي ، يتم ضبط المعايرة بالقوة لغرض التحقق من الارتباط.",
                                       [=]() { 
-                                        if (ConfirmationDialog::confirm("캘리브레이션을 강제로 설정합니다. 인게이지 확인용이니 실 주행시에는 초기화 하시기 바랍니다.")){
+                                        if (ConfirmationDialog::confirm("معايرة القوة. هذا للتحقق من الارتباط ، لذا يرجى إعادة ضبطه أثناء القيادة الفعلية.")){
                                           std::system(cal_ok);
                                         }
                                       }));
@@ -470,26 +470,26 @@ QWidget * user_panel(QWidget * parent) {
   layout->addWidget(new CarRecognition());
   //layout->addWidget(new CarForceSet());
   //QString car_model = QString::fromStdString(Params().get("CarModel", false));
-  //layout->addWidget(new LabelControl("현재차량모델", ""));
+  //layout->addWidget(new LabelControl("طراز السيارة الحالي", ""));
   //layout->addWidget(new LabelControl(car_model, ""));
 
   layout->addWidget(horizontal_line());
-  layout->addWidget(new LabelControl("판다 값", "주의要"));
+  layout->addWidget(new LabelControl("قيمة الباندا", "حذر"));
   layout->addWidget(new MaxSteer());
   layout->addWidget(new MaxRTDelta());
   layout->addWidget(new MaxRateUp());
   layout->addWidget(new MaxRateDown());
   const char* p_edit_go = "/data/openpilot/p_edit.sh ''";
-  layout->addWidget(new ButtonControl("판다 값 최적화", "실행", "판다 값을 적정값으로 최적화 합니다.",
+  layout->addWidget(new ButtonControl("تحسين قيمة الباندا", "إعدام", "تحسين قيمة الباندا إلى قيمة مناسبة.",
                                       [=]() { 
-                                        if (ConfirmationDialog::confirm("판다 값을 최적화 합니다. 조지 싸장님 쌀랑해요~")){
+                                        if (ConfirmationDialog::confirm("تحسين قيمة الباندا. الكابتن جورج ، افعلها مع الأرز.~")){
                                           std::system(p_edit_go);
                                         }
                                       }));
   const char* m_edit_go = "/data/openpilot/m_edit.sh ''";
-  layout->addWidget(new ButtonControl("모니터링 최적화", "실행", "야간 감시 및 터널 안 원활한 모니터링을 위하여 파라미터를 수정합니다.",
+  layout->addWidget(new ButtonControl("تحسين المراقبة", "إعدام", "تعديل المعلمات للمراقبة الليلية والمراقبة السلسة في النفق.",
                                       [=]() { 
-                                        if (ConfirmationDialog::confirm("야간감시 및 터널 모니터링을 최적화 합니다. 싸장님 좋아요. 콤마 쌀랑해요~")){
+                                        if (ConfirmationDialog::confirm("يحسن الرؤية الليلية ومراقبة الأنفاق. انا احبها. الجو بارد بفاصلة~")){
                                           std::system(m_edit_go);
                                         }
                                       }));
@@ -507,7 +507,7 @@ QWidget * tuning_panel(QWidget * parent) {
   QVBoxLayout *layout = new QVBoxLayout;
 
   // OPKR
-  layout->addWidget(new LabelControl("튜닝메뉴", ""));
+  layout->addWidget(new LabelControl("قائمة التوزين", ""));
   layout->addWidget(new CameraOffset());
   layout->addWidget(new LiveSteerRatioToggle());
   layout->addWidget(new SRBaseControl());
@@ -529,7 +529,7 @@ QWidget * tuning_panel(QWidget * parent) {
 
   layout->addWidget(horizontal_line());
 
-  layout->addWidget(new LabelControl("제어메뉴", ""));
+  layout->addWidget(new LabelControl("قائمة التحكم", ""));
   layout->addWidget(new LateralControl());
   layout->addWidget(new LiveTuneToggle());
   QString lat_control = QString::fromStdString(Params().get("LateralControlMethod", false));
@@ -570,7 +570,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
   )");
 
   // close button
-  QPushButton *close_btn = new QPushButton("닫기");
+  QPushButton *close_btn = new QPushButton("إغلاق");
   close_btn->setStyleSheet(R"(
     font-size: 60px;
     font-weight: bold;
@@ -588,12 +588,12 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
   QObject::connect(device, SIGNAL(reviewTrainingGuide()), this, SIGNAL(reviewTrainingGuide()));
 
   QPair<QString, QWidget *> panels[] = {
-    {"장치", new DevicePanel(this)},
-    {"네트워크", network_panel(this)},
-    {"토글메뉴", toggles_panel()},
-    {"정보", new DeveloperPanel()},
-    {"사용자설정", user_panel(this)},
-    {"튜닝", tuning_panel(this)},
+    {"الجهاز", new DevicePanel(this)},
+    {"شبكة الاتصال", network_panel(this)},
+    {"تبديل القائمة", toggles_panel()},
+    {"المعلومات", new DeveloperPanel()},
+    {"إعداد المستخدم", user_panel(this)},
+    {"لةحة الضبط", tuning_panel(this)},
   };
 
   sidebar_layout->addSpacing(45);
