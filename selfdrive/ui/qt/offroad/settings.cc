@@ -42,8 +42,8 @@ QWidget * toggles_panel() {
                                             ));
   toggles_list->addWidget(horizontal_line());
   toggles_list->addWidget(new ParamControl("IsMetric",
-                                            "미터법 사용",
-                                            "mi/h 대신 km/h 단위로 속도를 표시합니다.",
+                                            "استخدم النظام المتري",
+                                            "يعرض السرعة بالكيلومتر / الساعة بدلاً من ميل / الساعة.",
                                             "../assets/offroad/icon_metric.png"
                                             ));
   toggles_list->addWidget(horizontal_line());
