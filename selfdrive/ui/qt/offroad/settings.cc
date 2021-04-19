@@ -49,37 +49,37 @@ QWidget * toggles_panel() {
   toggles_list->addWidget(horizontal_line());
   toggles_list->addWidget(new ParamControl("CommunityFeaturesToggle",
                                             "커뮤니티 기능 사용",
-                                            "comma.ai에서 유지 또는 지원하지 않고 표준 안전 모델에 부합하는 것으로 확인되지 않은 오픈 소스 커뮤니티의 기능을 사용하십시오. 이러한 기능에는 커뮤니티 지원 자동차와 커뮤니티 지원 하드웨어가 포함됩니다. 이러한 기능을 사용할 때는 각별히 주의해야 합니다.",
+                                            "comma.ai استخدم ميزات من مجتمع المصادر المفتوحة التي لم يتم صيانتها أو دعمها ولم يتم التحقق منها لتتوافق مع نموذج الأمان القياسي.  تتضمن هذه الميزات المركبات التي تساعد المجتمع والأجهزة المدعومة من المجتمع.  يجب توخي الحذر بشكل خاص عند استخدام هذه الميزات.",
                                             "../assets/offroad/icon_shell.png"
                                             ));
   toggles_list->addWidget(horizontal_line());
   ParamControl *record_toggle = new ParamControl("RecordFront",
-                                            "운전자 영상 녹화 및 업로드",
-                                            "운전자 모니터링 카메라에서 데이터를 업로드하고 운전자 모니터링 알고리즘을 개선하십시오.",
+                                            "تسجيل وتحميل فيديو السائق",
+                                            "تحميل البيانات من كاميرات مراقبة السائق وتحسين خوارزميات مراقبة السائق.",
                                             "../assets/offroad/icon_network.png");
   toggles_list->addWidget(record_toggle);
   toggles_list->addWidget(horizontal_line());
   toggles_list->addWidget(new ParamControl("EndToEndToggle",
-                                           "\U0001f96c 차선 비활성화 모드 (알파) \U0001f96c",
-                                           "이 모드에서 오픈파일럿은 차선을 따라 주행하지 않고 사람이 운전하는 것 처럼 주행합니다.",
+                                           "\U0001f96c وضع تعطيل المسار (Alpha) \U0001f96c",
+                                           "في هذا الوضع ، لا يقود الطيار المفتوح الطريق ، بل يركض كما لو كان إنسانًا.",
                                            "../assets/offroad/icon_road.png"));
 
 #ifdef QCOM2
   toggles_list->addWidget(horizontal_line());
   toggles_list->addWidget(new ParamControl("EnableWideCamera",
-                                           "Enable use of Wide Angle Camera",
+                                           "تفعيل استخدام الكاميرا ذات الزاوية العريضة",
                                            "Use wide angle camera for driving and ui. Only takes effect after reboot.",
                                            "../assets/offroad/icon_openpilot.png"));
 #endif
   toggles_list->addWidget(horizontal_line());
   toggles_list->addWidget(new ParamControl("OpkrEnableDriverMonitoring",
-                                           "운전자 모니터링 사용",
-                                           "운전자 감시 모니터링을 사용합니다.",
+                                           "باستخدام مراقبة السائق",
+                                           "استخدام مراقبة السائق.",
                                            "../assets/offroad/icon_shell.png"));
   toggles_list->addWidget(horizontal_line());
   toggles_list->addWidget(new ParamControl("OpkrEnableLogger",
-                                           "로그기록 및 업로드 사용",
-                                           "주행로그를 기록 후 콤마서버로 전송합니다.",
+                                           "تمكين التسجيل والتحميل",
+                                           "بعد تسجيل سجل القيادة ، يتم إرساله إلى خادم الفاصلة..",
                                            "../assets/offroad/icon_shell.png"));
 
   bool record_lock = Params().getBool("RecordFrontLock");
@@ -105,8 +105,8 @@ DevicePanel::DevicePanel(QWidget* parent) : QWidget(parent) {
   // offroad-only buttons
   QList<ButtonControl*> offroad_btns;
 
-  offroad_btns.append(new ButtonControl("운전자 영상", "미리보기",
-                                   "운전자 모니터링 카메라를 미리 보고 장치 장착 위치를 최적화하여 최상의 운전자 모니터링 환경을 제공하십시오. (차량이 꺼져 있어야 합니다.)",
+  offroad_btns.append(new ButtonControl("فيديو السائق", "معاينة",
+                                   "قم بمعاينة كاميرا مراقبة السائق وقم بتحسين موقع تركيب الجهاز لتوفير أفضل تجربة مراقبة للسائق. (يجب إيقاف تشغيل السيارة.)",
                                    [=]() {
                                       Params().putBool("IsDriverViewEnabled", true);
                                       GLWindow::ui_state.scene.driver_view = true; }
