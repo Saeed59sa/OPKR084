@@ -385,7 +385,7 @@ QWidget * network_panel(QWidget * parent) {
 //  layout->addWidget(horizontal_line());
 
   const char* panda_flashing = "/data/openpilot/panda_flashing.sh ''";
-  layout->addWidget(new ButtonControl("وميض الباندا "،" تشغيل "،" وميض الباندا "قيد التقدم ، يومض المؤشر الأخضر للباندا بسرعة ويتم إعادة التشغيل تلقائيًا عند الانتهاء. لا تقم أبدًا بإيقاف تشغيل الجهاز أو إزالته بشكل تعسفي.",
+  layout->addWidget(new ButtonControl(" ", "إعدام", "امض الباندا عندما يكون يومض الباندا قيد التقدم ، يومض مؤشر LED الأخضر للباندا بسرعة ويتم إعادة التشغيل تلقائيًا عند الانتهاء. لا تقم أبدًا بإيقاف تشغيل الجهاز أو إزالته بشكل تعسفي.",
                                       [=]() {
                                         if (ConfirmationDialog::confirm("هل تريد المتابعة مع Panda Flashing؟")) {
                                           std::system(panda_flashing);
