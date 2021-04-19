@@ -48,7 +48,7 @@ QWidget * toggles_panel() {
                                             ));
   toggles_list->addWidget(horizontal_line());
   toggles_list->addWidget(new ParamControl("CommunityFeaturesToggle",
-                                            "커뮤니티 기능 사용",
+                                            "استخدام ميزات المجتمع",
                                             "comma.ai استخدم ميزات من مجتمع المصادر المفتوحة التي لم يتم صيانتها أو دعمها ولم يتم التحقق منها لتتوافق مع نموذج الأمان القياسي.  تتضمن هذه الميزات المركبات التي تساعد المجتمع والأجهزة المدعومة من المجتمع.  يجب توخي الحذر بشكل خاص عند استخدام هذه الميزات.",
                                             "../assets/offroad/icon_shell.png"
                                             ));
